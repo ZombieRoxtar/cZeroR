@@ -245,6 +245,19 @@ END_RECV_TABLE()
 		RecvPropInt			( RECVINFO( m_nWaterLevel ) ),
 		RecvPropFloat		( RECVINFO( m_flLaggedMovementValue )),
 
+		// Networking zone vars
+		RecvPropBool(RECVINFO(m_bPlayerInZoneStealth)),
+		RecvPropBool(RECVINFO(m_bPlayerInZoneRcBomb)),
+		RecvPropBool(RECVINFO(m_bPlayerInZoneBlowtorch)),
+		RecvPropBool(RECVINFO(m_bPlayerInZoneFiberopticCamera)),
+		RecvPropBool(RECVINFO(m_bPlayerInZoneRadio)),
+		RecvPropBool(RECVINFO(m_bPlayerInZoneDefuse)),
+		RecvPropBool(RECVINFO(m_bPlayerInZoneDigitalCamera)),
+		RecvPropBool(RECVINFO(m_bPlayerInZoneBriefcase)),
+		RecvPropBool(RECVINFO(m_bPlayerInZoneRescue)),
+		RecvPropBool(RECVINFO(m_bPlayerHasNVGs)),
+		RecvPropFloat(RECVINFO(m_flDefuseProgress)),
+
 	END_RECV_TABLE()
 
 	

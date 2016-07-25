@@ -19,3 +19,10 @@ END_RECV_TABLE()
 
 IMPLEMENT_CLIENTCLASS_DT( C_BaseHLBludgeonWeapon, DT_BaseHLBludgeonWeapon, CBaseHLBludgeonWeapon )
 END_RECV_TABLE()
+
+// CS-esque Weapons
+IMPLEMENT_CLIENTCLASS_DT(C_BaseAdvancedWeapon, DT_BaseAdvancedWeapon, CBaseAdvancedWeapon)
+END_RECV_TABLE()
+
+IMPLEMENT_CLIENTCLASS_DT(C_WeaponMultiGrenade, DT_WeaponMultiGrenade, CWeaponMultiGrenade)
+END_RECV_TABLE()

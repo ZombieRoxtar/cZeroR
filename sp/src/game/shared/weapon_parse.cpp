@@ -347,6 +347,36 @@ FileWeaponInfo_t::FileWeaponInfo_t()
 	bShowUsageHint = false;
 	m_bAllowFlipping = true;
 	m_bBuiltRightHanded = true;
+
+	m_bFullAuto = true;
+	m_nPlayerSpeed = 0; // "MaxPlayerSpeed" from the weapon's script
+	m_fRecoilAngle = 0.0f;
+	m_fRecoilAngleVariance = 0.0f;
+	m_fRecoilMagnitude = 0.0f;
+	m_fRecoilMagnitudeVariance = 0.0f;
+	m_fInaccuracyCrouch = 0.0f;
+	m_fInaccuracyStand = 0.0f;
+	m_fInaccuracyJump = 0.0f;
+	m_fInaccuracyLand = 0.0f;
+	m_fInaccuracyLadder = 0.0f;
+	m_fInaccuracyFire = 0.0f;
+	m_fInaccuracyMove = 0.0f;
+
+	m_nPlayerSpeedAlt = 0; // "MaxPlayerSpeedAlt" from the weapon's script
+
+	m_nZoomFov1, m_nZoomFov2 = MAX_FOV;
+	m_flZoomTime0, m_flZoomTime1, m_flZoomTime2 = 0.0f;
+	m_bHideViewModelWhenZoomed = true;
+
+	m_nZoomLevels, m_szZoomInSound[0], m_szZoomOutSound[0] = 0;
+
+	m_fInaccuracyCrouchAlt = 0.0f; // Used by Zooming Weapons
+	m_fInaccuracyStandAlt = 0.0f;
+	m_fInaccuracyJumpAlt = 0.0f;
+	m_fInaccuracyLandAlt = 0.0f;
+	m_fInaccuracyLadderAlt = 0.0f;
+	m_fInaccuracyFireAlt = 0.0f;
+	m_fInaccuracyMoveAlt = 0.0f;
 }
 
 #ifdef CLIENT_DLL
@@ -386,7 +416,45 @@ void FileWeaponInfo_t::Parse( KeyValues *pKeyValuesData, const char *szWeaponNam
 	iWeight = pKeyValuesData->GetInt( "weight", 0 );
 
 	iRumbleEffect = pKeyValuesData->GetInt( "rumble", -1 );
-	
+
+	// New vars from the beefier weapon scripts
+	m_bFullAuto = (pKeyValuesData->GetInt("FullAuto", 1) != 0) ? true : false;
+	m_nPlayerSpeed = pKeyValuesData->GetInt("MaxPlayerSpeed", 0);
+	// Turning these 4 into percents right now
+	m_fRecoilAngle = pKeyValuesData->GetFloat("RecoilAngle", 0.0f) / 100.0f;
+	m_fRecoilAngleVariance = pKeyValuesData->GetFloat("RecoilAngleVariance", 70.0f) / 100.0f;
+	m_fRecoilMagnitude = pKeyValuesData->GetFloat("RecoilMagnitude", 20.0f) / 100.0f;
+	m_fRecoilMagnitudeVariance = pKeyValuesData->GetFloat("RecoilMagnitudeVariance", 2.0f) / 100.0f;
+
+	m_fInaccuracyCrouch = pKeyValuesData->GetFloat("InaccuracyCrouch", 8.0f);
+	m_fInaccuracyStand = pKeyValuesData->GetFloat("InaccuracyStand", 10.0f);
+	m_fInaccuracyJump = pKeyValuesData->GetFloat("InaccuracyJump", 1.0f);
+	m_fInaccuracyLand = pKeyValuesData->GetFloat("InaccuracyLand", 1.0f);
+	m_fInaccuracyLadder = pKeyValuesData->GetFloat("InaccuracyLadder", 100.0f);
+	m_fInaccuracyFire = pKeyValuesData->GetFloat("InaccuracyFire", 10.0f);
+	m_fInaccuracyMove = pKeyValuesData->GetFloat("InaccuracyMove", 100.0f);
+
+	m_nPlayerSpeedAlt = pKeyValuesData->GetInt("MaxPlayerSpeedAlt", 0);
+
+	m_nZoomLevels = pKeyValuesData->GetInt("ZoomLevels", 0);
+	m_nZoomFov1 = pKeyValuesData->GetInt("ZoomFov1", MAX_FOV);
+	m_nZoomFov2 = pKeyValuesData->GetInt("ZoomFov2", MAX_FOV);
+	m_flZoomTime0 = pKeyValuesData->GetFloat("ZoomTime0", 0.5f);
+	m_flZoomTime1 = pKeyValuesData->GetFloat("ZoomTime1", 0.5f);
+	m_flZoomTime2 = pKeyValuesData->GetFloat("ZoomTime2", 0.5f);
+	m_bHideViewModelWhenZoomed = (pKeyValuesData->GetInt("HideViewModelZoomed", 1) != 0) ? true : false;
+
+	Q_strncpy(m_szZoomInSound, pKeyValuesData->GetString("ZoomINSound", "Default.Reload"), MAX_WEAPON_STRING);
+	Q_strncpy(m_szZoomOutSound, pKeyValuesData->GetString("ZoomOUTSound", "Default.Reload"), MAX_WEAPON_STRING);
+
+	m_fInaccuracyCrouchAlt = pKeyValuesData->GetFloat("InaccuracyCrouchAlt", 60.0f); // Used by Zooming Weapons
+	m_fInaccuracyStandAlt = pKeyValuesData->GetFloat("InaccuracyStandAlt", 80.0f);
+	m_fInaccuracyJumpAlt = pKeyValuesData->GetFloat("InaccuracyJumpAlt", 1.0f);
+	m_fInaccuracyLandAlt = pKeyValuesData->GetFloat("InaccuracyLandAlt", 1.0f);
+	m_fInaccuracyLadderAlt = pKeyValuesData->GetFloat("InaccuracyLadderAlt", 150.0f);
+	m_fInaccuracyFireAlt = pKeyValuesData->GetFloat("InaccuracyFireAlt", 50.0f);
+	m_fInaccuracyMoveAlt = pKeyValuesData->GetFloat("InaccuracyMoveAlt", 180.0f);
+
 	// LAME old way to specify item flags.
 	// Weapon scripts should use the flag names.
 	iFlags = pKeyValuesData->GetInt( "item_flags", ITEM_FLAG_LIMITINWORLD );

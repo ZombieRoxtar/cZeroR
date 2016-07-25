@@ -524,6 +524,28 @@ public:
 
 	void					SendAmmoUpdate(void);
 
+	virtual void			SetDefuseProgress(float progress);
+	virtual void			SetPlayerInZoneStealth(bool state);
+	virtual void			SetPlayerInZoneRcBomb(bool state);
+	virtual void			SetPlayerInZoneBlowtorch(bool state);
+	virtual void			SetPlayerInZoneFiberopticCamera(bool state);
+	virtual void			SetPlayerInZoneRadio(bool state);
+	virtual void			SetPlayerInZoneDefuse(bool state);
+	virtual void			SetPlayerInZoneDigitalCamera(bool state);
+	virtual void			SetPlayerInZoneBriefcase(bool state);
+	virtual void			SetPlayerInZoneRescue(bool state);
+	virtual void			SetPlayerHasNVGs(bool state);
+	bool					IsPlayerInZoneStealth(void) { return m_bPlayerInZoneStealth; }
+	bool					IsPlayerInZoneRcBomb(void) { return m_bPlayerInZoneRcBomb; }
+	bool					IsPlayerInZoneBlowtorch(void) { return m_bPlayerInZoneBlowtorch; }
+	bool					IsPlayerInZoneFiberopticCamera(void) { return m_bPlayerInZoneFiberopticCamera; }
+	bool					IsPlayerInZoneRadio(void) { return m_bPlayerInZoneRadio; }
+	bool					IsPlayerInZoneDefuse(void) { return m_bPlayerInZoneDefuse; }
+	bool					IsPlayerInZoneDigitalCamera(void) { return m_bPlayerInZoneDigitalCamera; }
+	bool					IsPlayerInZoneBriefcase(void) { return m_bPlayerInZoneBriefcase; }
+	bool					IsPlayerInZoneRescue(void) { return m_bPlayerInZoneRescue; }
+	bool					PlayerHasNVGs(void) { return m_bPlayerHasNVGs; }
+
 	void					WaterMove( void );
 	float					GetWaterJumpTime() const;
 	void					SetWaterJumpTime( float flWaterJumpTime );
@@ -694,7 +716,7 @@ public:
 	void	IncrementArmorValue( int nCount, int nMaxValue = -1 );
 
 	void	SetConnected( PlayerConnectedState iConnected ) { m_iConnected = iConnected; }
-	virtual void EquipSuit( bool bPlayEffects = true );
+	virtual void EquipSuit( bool bPlayEffects = false );
 	virtual void RemoveSuit( void );
 	void	SetMaxSpeed( float flMaxSpeed ) { m_flMaxspeed = flMaxSpeed; }
 
@@ -1147,6 +1169,18 @@ protected:
 	float GetStepSize( void ) const { return m_Local.m_flStepSize; }
 
 	CNetworkVar( float,  m_flLaggedMovementValue );
+
+	CNetworkVar(bool, m_bPlayerInZoneStealth);
+	CNetworkVar(bool, m_bPlayerInZoneRcBomb);
+	CNetworkVar(bool, m_bPlayerInZoneBlowtorch);
+	CNetworkVar(bool, m_bPlayerInZoneFiberopticCamera);
+	CNetworkVar(bool, m_bPlayerInZoneRadio);
+	CNetworkVar(bool, m_bPlayerInZoneDefuse);
+	CNetworkVar(bool, m_bPlayerInZoneDigitalCamera);
+	CNetworkVar(bool, m_bPlayerInZoneBriefcase);
+	CNetworkVar(bool, m_bPlayerInZoneRescue);
+	CNetworkVar(bool, m_bPlayerHasNVGs);
+	CNetworkVar(float, m_flDefuseProgress);
 
 	// These are generated while running usercmds, then given to UpdateVPhysicsPosition after running all queued commands.
 	Vector m_vNewVPhysicsPosition;

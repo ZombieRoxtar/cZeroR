@@ -172,26 +172,15 @@ void CBaseViewModel::SpawnControlPanels()
 	{
 		Q_snprintf( buf, sizeof( buf ), pAttachmentNameLL, nPanel );
 		int nLLAttachmentIndex = pEntityToSpawnOn->LookupAttachment(buf);
-		if (nLLAttachmentIndex <= 0)
-		{
-			// Try and use my panels then
-			pEntityToSpawnOn = this;
-			Q_snprintf( buf, sizeof( buf ), pOrgLL, nPanel );
-			nLLAttachmentIndex = pEntityToSpawnOn->LookupAttachment(buf);
-			if (nLLAttachmentIndex <= 0)
-				return;
-		}
 
 		Q_snprintf( buf, sizeof( buf ), pAttachmentNameUR, nPanel );
 		int nURAttachmentIndex = pEntityToSpawnOn->LookupAttachment(buf);
+
+		if (nLLAttachmentIndex <= 0)
+			return;
+
 		if (nURAttachmentIndex <= 0)
-		{
-			// Try and use my panels then
-			Q_snprintf( buf, sizeof( buf ), pOrgUR, nPanel );
-			nURAttachmentIndex = pEntityToSpawnOn->LookupAttachment(buf);
-			if (nURAttachmentIndex <= 0)
-				return;
-		}
+			return;
 
 		const char *pScreenName;
 		weapon->GetControlPanelInfo( nPanel, pScreenName );
@@ -205,14 +194,11 @@ void CBaseViewModel::SpawnControlPanels()
 
 		// Compute the screen size from the attachment points...
 		matrix3x4_t	panelToWorld;
-		pEntityToSpawnOn->GetAttachment( nLLAttachmentIndex, panelToWorld );
-
 		matrix3x4_t	worldToPanel;
 		MatrixInvert( panelToWorld, worldToPanel );
 
 		// Now get the lower right position + transform into panel space
 		Vector lr, lrlocal;
-		pEntityToSpawnOn->GetAttachment( nURAttachmentIndex, panelToWorld );
 		MatrixGetColumn( panelToWorld, 3, lr );
 		VectorTransform( lr, worldToPanel, lrlocal );
 
@@ -222,7 +208,7 @@ void CBaseViewModel::SpawnControlPanels()
 		CVGuiScreen *pScreen = CreateVGuiScreen( pScreenClassname, pScreenName, pEntityToSpawnOn, this, nLLAttachmentIndex );
 		pScreen->ChangeTeam( GetTeamNumber() );
 		pScreen->SetActualSize( flWidth, flHeight );
-		pScreen->SetActive( false );
+		pScreen->SetActive( true );
 		pScreen->MakeVisibleOnlyToTeammates( false );
 	
 #ifdef INVASION_DLL

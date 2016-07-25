@@ -589,6 +589,271 @@ public:
 
 LINK_ENTITY_TO_CLASS( item_ammo_ar2_altfire, CItem_AR2AltFireRound );
 
+// ========================================================================
+//	>> 338Mag
+// ========================================================================
+class CItem_Box338Mag : public CItem
+{
+public:
+	DECLARE_CLASS(CItem_Box338Mag, CItem);
+
+	void Spawn(void)
+	{
+		Precache();
+		SetModel("models/items/boxsniperrounds.mdl");
+		BaseClass::Spawn();
+	}
+	void Precache(void)
+	{
+		PrecacheModel("models/items/boxsniperrounds.mdl");
+	}
+	bool MyTouch(CBasePlayer *pPlayer)
+	{
+		if (ITEM_GiveAmmo(pPlayer, SIZE_AMMO_338MAG, "338Mag"))
+		{
+			if (g_pGameRules->ItemShouldRespawn(this) == GR_ITEM_RESPAWN_NO)
+			{
+				UTIL_Remove(this);
+			}
+			return true;
+		}
+		return false;
+	}
+};
+LINK_ENTITY_TO_CLASS(item_ammo_338mag, CItem_Box338Mag);
+
+// ========================================================================
+//	>> 45ACP
+// ========================================================================
+class CItem_Box45ACP : public CItem
+{
+public:
+	DECLARE_CLASS(CItem_Box45ACP, CItem);
+
+	void Spawn(void)
+	{
+		Precache();
+		SetModel("models/items/boxsrounds.mdl");
+		BaseClass::Spawn();
+	}
+	void Precache(void)
+	{
+		PrecacheModel("models/items/boxsrounds.mdl");
+	}
+	bool MyTouch(CBasePlayer *pPlayer)
+	{
+		if (ITEM_GiveAmmo(pPlayer, SIZE_AMMO_45ACP, "45ACP"))
+		{
+			if (g_pGameRules->ItemShouldRespawn(this) == GR_ITEM_RESPAWN_NO)
+			{
+				UTIL_Remove(this);
+			}
+			return true;
+		}
+		return false;
+	}
+};
+LINK_ENTITY_TO_CLASS(item_ammo_45acp, CItem_Box45ACP);
+
+// ========================================================================
+//	>> 50AE
+// ========================================================================
+class CItem_Box50AE : public CItem
+{
+public:
+	DECLARE_CLASS(CItem_Box50AE, CItem);
+
+	void Spawn(void)
+	{
+		Precache();
+		SetModel("models/items/boxsrounds.mdl");
+		BaseClass::Spawn();
+	}
+	void Precache(void)
+	{
+		PrecacheModel("models/items/boxsrounds.mdl");
+	}
+	bool MyTouch(CBasePlayer *pPlayer)
+	{
+		if (ITEM_GiveAmmo(pPlayer, SIZE_AMMO_50AE, "50AE"))
+		{
+			if (g_pGameRules->ItemShouldRespawn(this) == GR_ITEM_RESPAWN_NO)
+			{
+				UTIL_Remove(this);
+			}
+			return true;
+		}
+		return false;
+	}
+};
+LINK_ENTITY_TO_CLASS(item_ammo_50ae, CItem_Box50AE);
+
+// ========================================================================
+//	>> 556MM
+// ========================================================================
+class CItem_Box556MM : public CItem
+{
+public:
+	DECLARE_CLASS(CItem_Box556MM, CItem);
+
+	void Spawn(void)
+	{
+		Precache();
+		SetModel("models/items/boxmrounds.mdl");
+		BaseClass::Spawn();
+	}
+	void Precache(void)
+	{
+		PrecacheModel("models/items/boxmrounds.mdl");
+	}
+	bool MyTouch(CBasePlayer *pPlayer)
+	{
+		if (ITEM_GiveAmmo(pPlayer, SIZE_AMMO_556MM, "556MM"))
+		{
+			if (g_pGameRules->ItemShouldRespawn(this) == GR_ITEM_RESPAWN_NO)
+			{
+				UTIL_Remove(this);
+			}
+			return true;
+		}
+		return false;
+	}
+};
+LINK_ENTITY_TO_CLASS(item_ammo_556MM, CItem_Box556MM);
+
+// ========================================================================
+//	>> 556MMBOX (M249)
+// ========================================================================
+class CItem_Box556MMBox : public CItem
+{
+public:
+	DECLARE_CLASS(CItem_Box556MMBox, CItem);
+
+	void Spawn(void)
+	{
+		Precache();
+		SetModel("models/items/boxmrounds.mdl");
+		BaseClass::Spawn();
+	}
+	void Precache(void)
+	{
+		PrecacheModel("models/items/boxmrounds.mdl");
+	}
+	bool MyTouch(CBasePlayer *pPlayer)
+	{
+		if (ITEM_GiveAmmo(pPlayer, SIZE_AMMO_556MM_BOX, "556MM_Box"))
+		{
+			if (g_pGameRules->ItemShouldRespawn(this) == GR_ITEM_RESPAWN_NO)
+			{
+				UTIL_Remove(this);
+			}
+			return true;
+		}
+		return false;
+	}
+};
+LINK_ENTITY_TO_CLASS(item_ammo_556mm_box, CItem_Box556MMBox);
+
+// ========================================================================
+//	>> 57mm
+// ========================================================================
+class CItem_Box57MM : public CItem
+{
+public:
+	DECLARE_CLASS(CItem_Box57MM, CItem);
+
+	void Spawn(void)
+	{
+		Precache();
+		SetModel("models/items/boxsrounds.mdl");
+		BaseClass::Spawn();
+	}
+	void Precache(void)
+	{
+		PrecacheModel("models/items/boxsrounds.mdl");
+	}
+	bool MyTouch(CBasePlayer *pPlayer)
+	{
+		if (ITEM_GiveAmmo(pPlayer, SIZE_AMMO_57MM, "57MM"))
+		{
+			if (g_pGameRules->ItemShouldRespawn(this) == GR_ITEM_RESPAWN_NO)
+			{
+				UTIL_Remove(this);
+			}
+			return true;
+		}
+		return false;
+	}
+};
+LINK_ENTITY_TO_CLASS(item_ammo_57mm, CItem_Box57MM);
+
+// ========================================================================
+//	>> 762
+// ========================================================================
+class CItem_Box762MM : public CItem
+{
+public:
+	DECLARE_CLASS(CItem_Box762MM, CItem);
+
+	void Spawn(void)
+	{
+		Precache();
+		SetModel("models/items/boxmrounds.mdl");
+		BaseClass::Spawn();
+	}
+	void Precache(void)
+	{
+		PrecacheModel("models/items/boxmrounds.mdl");
+	}
+	bool MyTouch(CBasePlayer *pPlayer)
+	{
+		if (ITEM_GiveAmmo(pPlayer, SIZE_AMMO_762MM, "762MM"))
+		{
+			if (g_pGameRules->ItemShouldRespawn(this) == GR_ITEM_RESPAWN_NO)
+			{
+				UTIL_Remove(this);
+			}
+			return true;
+		}
+		return false;
+	}
+};
+LINK_ENTITY_TO_CLASS(item_ammo_762mm, CItem_Box762MM);
+
+// ========================================================================
+//	>> 9MM
+// ========================================================================
+class CItem_Box9MM : public CItem
+{
+public:
+	DECLARE_CLASS(CItem_Box9MM, CItem);
+
+	void Spawn(void)
+	{
+		Precache();
+		SetModel("models/items/boxsrounds.mdl");
+		BaseClass::Spawn();
+	}
+	void Precache(void)
+	{
+		PrecacheModel("models/items/boxsrounds.mdl");
+	}
+	bool MyTouch(CBasePlayer *pPlayer)
+	{
+		if (ITEM_GiveAmmo(pPlayer, SIZE_AMMO_9MM, "9MM"))
+		{
+			if (g_pGameRules->ItemShouldRespawn(this) == GR_ITEM_RESPAWN_NO)
+			{
+				UTIL_Remove(this);
+			}
+			return true;
+		}
+		return false;
+	}
+};
+LINK_ENTITY_TO_CLASS(item_ammo_9mm, CItem_Box9MM);
+
+
 // ==================================================================
 // Ammo crate which will supply infinite ammo of the specified type
 // ==================================================================

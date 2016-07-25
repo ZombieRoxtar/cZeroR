@@ -418,6 +418,16 @@ BEGIN_DATADESC( CBasePlayer )
 	DEFINE_FIELD( m_bPlayerUnderwater, FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_hViewEntity, FIELD_EHANDLE ),
 
+	DEFINE_FIELD(m_bPlayerInZoneStealth, FIELD_BOOLEAN),
+	DEFINE_FIELD(m_bPlayerInZoneRcBomb, FIELD_BOOLEAN),
+	DEFINE_FIELD(m_bPlayerInZoneBlowtorch, FIELD_BOOLEAN),
+	DEFINE_FIELD(m_bPlayerInZoneFiberopticCamera, FIELD_BOOLEAN),
+	DEFINE_FIELD(m_bPlayerInZoneRadio, FIELD_BOOLEAN),
+	DEFINE_FIELD(m_bPlayerInZoneDefuse, FIELD_BOOLEAN),
+	DEFINE_FIELD(m_bPlayerInZoneDigitalCamera, FIELD_BOOLEAN),
+	DEFINE_FIELD(m_bPlayerInZoneBriefcase, FIELD_BOOLEAN),
+	DEFINE_FIELD(m_flDefuseProgress, FIELD_FLOAT),
+
 	DEFINE_FIELD( m_hConstraintEntity, FIELD_EHANDLE ),
 	DEFINE_FIELD( m_vecConstraintCenter, FIELD_VECTOR ),
 	DEFINE_FIELD( m_flConstraintRadius, FIELD_FLOAT ),
@@ -831,12 +841,13 @@ void CBasePlayer::DeathSound( const CTakeDamageInfo &info )
 	{
 		EmitSound( "Player.Death" );
 	}
-
+#ifdef HUD_SOUNDS
 	// play one of the suit death alarms
 	if ( IsSuitEquipped() )
 	{
 		UTIL_EmitGroupnameSuit(edict(), "HEV_DEAD");
 	}
+#endif
 }
 
 // override takehealth
@@ -1065,7 +1076,9 @@ int CBasePlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 	int ftrivial;
 	float flRatio;
 	float flBonus;
+#ifdef HUD_SOUNDS // flHealthPrev is used to determine if the suit should talk about your injury
 	float flHealthPrev = m_iHealth;
+#endif
 
 	CTakeDamageInfo info = inputInfo;
 
@@ -1259,48 +1272,55 @@ int CBasePlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 
 		if (bitsDamage & DMG_CLUB)
 		{
+#ifdef HUD_SOUNDS
 			if (fmajor)
 				SetSuitUpdate("!HEV_DMG4", false, SUIT_NEXT_IN_30SEC);	// minor fracture
+#endif
 			bitsDamage &= ~DMG_CLUB;
 			ffound = true;
 		}
 		if (bitsDamage & (DMG_FALL | DMG_CRUSH))
 		{
+#ifdef HUD_SOUNDS
 			if (fmajor)
 				SetSuitUpdate("!HEV_DMG5", false, SUIT_NEXT_IN_30SEC);	// major fracture
 			else
 				SetSuitUpdate("!HEV_DMG4", false, SUIT_NEXT_IN_30SEC);	// minor fracture
-	
+#endif
 			bitsDamage &= ~(DMG_FALL | DMG_CRUSH);
 			ffound = true;
 		}
 		
 		if (bitsDamage & DMG_BULLET)
 		{
+#ifdef HUD_SOUNDS
 			if (m_lastDamageAmount > 5)
 				SetSuitUpdate("!HEV_DMG6", false, SUIT_NEXT_IN_30SEC);	// blood loss detected
 			//else
 			//	SetSuitUpdate("!HEV_DMG0", false, SUIT_NEXT_IN_30SEC);	// minor laceration
-			
+#endif
 			bitsDamage &= ~DMG_BULLET;
 			ffound = true;
 		}
 
 		if (bitsDamage & DMG_SLASH)
 		{
+#ifdef HUD_SOUNDS
 			if (fmajor)
 				SetSuitUpdate("!HEV_DMG1", false, SUIT_NEXT_IN_30SEC);	// major laceration
 			else
 				SetSuitUpdate("!HEV_DMG0", false, SUIT_NEXT_IN_30SEC);	// minor laceration
-
+#endif
 			bitsDamage &= ~DMG_SLASH;
 			ffound = true;
 		}
 		
 		if (bitsDamage & DMG_SONIC)
 		{
+#ifdef HUD_SOUNDS
 			if (fmajor)
 				SetSuitUpdate("!HEV_DMG2", false, SUIT_NEXT_IN_1MIN);	// internal bleeding
+#endif
 			bitsDamage &= ~DMG_SONIC;
 			ffound = true;
 		}
@@ -1313,29 +1333,36 @@ int CBasePlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 				m_tbdPrev = gpGlobals->curtime;
 				m_rgbTimeBasedDamage[itbd_PoisonRecover] = 0;
 			}
-
+#ifdef HUD_SOUNDS
 			SetSuitUpdate("!HEV_DMG3", false, SUIT_NEXT_IN_1MIN);	// blood toxins detected
+#endif
 			bitsDamage &= ~( DMG_POISON | DMG_PARALYZE );
 			ffound = true;
 		}
 
 		if (bitsDamage & DMG_ACID)
 		{
+#ifdef HUD_SOUNDS
 			SetSuitUpdate("!HEV_DET1", false, SUIT_NEXT_IN_1MIN);	// hazardous chemicals detected
+#endif
 			bitsDamage &= ~DMG_ACID;
 			ffound = true;
 		}
 
 		if (bitsDamage & DMG_NERVEGAS)
 		{
+#ifdef HUD_SOUNDS
 			SetSuitUpdate("!HEV_DET0", false, SUIT_NEXT_IN_1MIN);	// biohazard detected
+#endif
 			bitsDamage &= ~DMG_NERVEGAS;
 			ffound = true;
 		}
 
 		if (bitsDamage & DMG_RADIATION)
 		{
+#ifdef HUD_SOUNDS
 			SetSuitUpdate("!HEV_DET2", false, SUIT_NEXT_IN_1MIN);	// radiation detected
+#endif
 			bitsDamage &= ~DMG_RADIATION;
 			ffound = true;
 		}
@@ -1357,7 +1384,7 @@ int CBasePlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 	}
 
 	m_Local.m_vecPunchAngle.SetX( flPunch );
-
+#ifdef HUD_SOUNDS
 	if (fTookDamage && !ftrivial && fmajor && flHealthPrev >= 75) 
 	{
 		// first time we take major damage...
@@ -1393,7 +1420,7 @@ int CBasePlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 			else
 				SetSuitUpdate("!HEV_HLTH1", false, SUIT_NEXT_IN_10MIN);	// health dropping
 		}
-
+#endif
 	// Do special explosion damage effect
 	if ( bitsDamage & DMG_BLAST )
 	{
@@ -5873,14 +5900,18 @@ void CBasePlayer::ImpulseCommands( )
 	switch (iImpulse)
 	{
 	case 100:
-        // temporary flashlight for level designers
-        if ( FlashlightIsOn() )
+		// In CS:CZ:DS there is only a flashlight on the MP7 and the Nova, so let's leave this here, but make it a cheat
+		if (sv_cheats->GetBool())
 		{
-			FlashlightTurnOff();
-		}
-        else 
-		{
-			FlashlightTurnOn();
+			// temporary flashlight for level designers
+			if (FlashlightIsOn())
+			{
+				FlashlightTurnOff();
+			}
+			else
+			{
+				FlashlightTurnOn();
+			}
 		}
 		break;
 
@@ -6148,23 +6179,78 @@ void CBasePlayer::CheatImpulseCommands( int iImpulse )
 		GiveAmmo( 5,	"grenade");
 		GiveAmmo( 32,	"357" );
 		GiveAmmo( 16,	"XBowBolt" );
-#ifdef HL2_EPISODIC
-		GiveAmmo( 5,	"Hopwire" );
-#endif		
-		GiveNamedItem( "weapon_smg1" );
-		GiveNamedItem( "weapon_frag" );
-		GiveNamedItem( "weapon_crowbar" );
-		GiveNamedItem( "weapon_pistol" );
-		GiveNamedItem( "weapon_ar2" );
-		GiveNamedItem( "weapon_shotgun" );
-		GiveNamedItem( "weapon_physcannon" );
-		GiveNamedItem( "weapon_bugbait" );
-		GiveNamedItem( "weapon_rpg" );
-		GiveNamedItem( "weapon_357" );
-		GiveNamedItem( "weapon_crossbow" );
-#ifdef HL2_EPISODIC
-		// GiveNamedItem( "weapon_magnade" );
-#endif
+
+		GiveAmmo(255, "338Mag");
+		GiveAmmo(255, "45ACP");
+		GiveAmmo(35, "50AE");
+		GiveAmmo(255, "556MM");
+		GiveAmmo(255, "556MM_Box");
+		GiveAmmo(100, "57MM");
+		GiveAmmo(90, "762MM");
+		GiveAmmo(120, "9MM");
+		GiveAmmo(52, "357SIG");
+		GiveAmmo(1, "AMMO_TYPE_TASERCHARGE");
+
+		// FIXME: Remove at least some of these since the HUD cannot show them all
+		GiveNamedItem("weapon_rcbomb");
+		GiveNamedItem("weapon_blowtorch");
+		GiveNamedItem("weapon_fiberopticcamera");
+		GiveNamedItem("weapon_radio");
+		GiveNamedItem("weapon_camera");
+		GiveNamedItem("weapon_briefcase");
+
+		GiveNamedItem("weapon_ak47");
+		GiveNamedItem("weapon_aug");
+		GiveNamedItem("weapon_awp");
+		GiveNamedItem("weapon_bizon");
+		GiveNamedItem("weapon_deagle");
+		GiveNamedItem("weapon_elite");
+		GiveNamedItem("weapon_famas");
+		GiveNamedItem("weapon_fiveseven");
+		GiveNamedItem("weapon_g3sg1");
+		GiveNamedItem("weapon_galilar");
+		GiveNamedItem("weapon_glock");
+		GiveNamedItem("weapon_hkp2000");
+		GiveNamedItem("weapon_knife");
+		GiveNamedItem("weapon_law");
+		GiveNamedItem("weapon_m249");
+		GiveNamedItem("weapon_m4a4");
+		GiveNamedItem("weapon_m60");
+		GiveNamedItem("weapon_mac10");
+		GiveNamedItem("weapon_mag7");
+		GiveNamedItem("weapon_mp7");
+		GiveNamedItem("weapon_mp9");
+		GiveNamedItem("weapon_negev");
+		GiveNamedItem("weapon_nova");
+		GiveNamedItem("weapon_p250");
+		GiveNamedItem("weapon_p90");
+		GiveNamedItem("weapon_sawedoff");
+		GiveNamedItem("weapon_scar20");
+		GiveNamedItem("weapon_sg556");
+		GiveNamedItem("weapon_ssg08");
+		GiveNamedItem("weapon_taser");
+		GiveNamedItem("weapon_tec9");
+		GiveNamedItem("weapon_ump45");
+		GiveNamedItem("weapon_xm1014");
+
+		GiveNamedItem("weapon_decoy");
+		GiveNamedItem("weapon_flashbang");
+		GiveNamedItem("weapon_hegrenade");
+		GiveNamedItem("weapon_incgrenade");
+		GiveNamedItem("weapon_molotov");
+		GiveNamedItem("weapon_smokegrenade");
+
+		GiveAmmo(5, "AMMO_TYPE_DECOY");
+		GiveAmmo(5, "AMMO_TYPE_FLASHBANG");
+		GiveAmmo(5, "AMMO_TYPE_HEGRENADE");
+		GiveAmmo(5, "AMMO_TYPE_INCGRENADE");
+		GiveAmmo(5, "AMMO_TYPE_MOLOTOV");
+		GiveAmmo(5, "AMMO_TYPE_SMOKEGRENADE");
+
+		if (m_ArmorValue < 100)
+		{
+			GiveNamedItem("item_armor");
+		}
 		if ( GetHealth() < 100 )
 		{
 			TakeHealth( 25, DMG_GENERIC );
@@ -7956,6 +8042,18 @@ void SendProxy_CropFlagsToPlayerFlagBitsLength( const SendProp *pProp, const voi
 
 		SendPropInt			( SENDINFO( m_nWaterLevel ), 2, SPROP_UNSIGNED ),
 		SendPropFloat		( SENDINFO( m_flLaggedMovementValue ), 0, SPROP_NOSCALE ),
+
+		SendPropBool(SENDINFO(m_bPlayerInZoneStealth)),
+		SendPropBool(SENDINFO(m_bPlayerInZoneRcBomb)),
+		SendPropBool(SENDINFO(m_bPlayerInZoneBlowtorch)),
+		SendPropBool(SENDINFO(m_bPlayerInZoneFiberopticCamera)),
+		SendPropBool(SENDINFO(m_bPlayerInZoneRadio)),
+		SendPropBool(SENDINFO(m_bPlayerInZoneDefuse)),
+		SendPropBool(SENDINFO(m_bPlayerInZoneDigitalCamera)),
+		SendPropBool(SENDINFO(m_bPlayerInZoneBriefcase)),
+		SendPropBool(SENDINFO(m_bPlayerInZoneRescue)),
+		SendPropBool(SENDINFO(m_bPlayerHasNVGs)),
+		SendPropFloat(SENDINFO(m_flDefuseProgress), 0, SPROP_NOSCALE),
 
 	END_SEND_TABLE()
 

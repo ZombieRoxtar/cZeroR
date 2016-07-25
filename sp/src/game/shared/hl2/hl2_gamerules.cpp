@@ -102,6 +102,51 @@ ConVar	sk_ammo_qty_scale3 ( "sk_ammo_qty_scale3", "0.60", FCVAR_REPLICATED );
 ConVar	sk_plr_health_drop_time		( "sk_plr_health_drop_time", "30", FCVAR_REPLICATED );
 ConVar	sk_plr_grenade_drop_time	( "sk_plr_grenade_drop_time", "30", FCVAR_REPLICATED );
 
+ConVar	sk_plr_dmg_blowtorch	( "sk_plr_dmg_blowtorch", "1", FCVAR_REPLICATED);
+ConVar	sk_npc_dmg_blowtorch	( "sk_npc_dmg_blowtorch", "1", FCVAR_REPLICATED);
+
+ConVar	sk_max_rcbombs			( "sk_max_rcbombs", "5", FCVAR_REPLICATED);
+
+ConVar	sk_plr_dmg_338Mag		( "sk_plr_dmg_338Mag", "40", FCVAR_REPLICATED);
+ConVar	sk_npc_dmg_338Mag		( "sk_npc_dmg_338Mag", "20", FCVAR_REPLICATED);
+ConVar	sk_max_338Mag			( "sk_max_338Mag", "30", FCVAR_REPLICATED);
+
+ConVar	sk_plr_dmg_357Sig		( "sk_plr_dmg_338Mag", "5", FCVAR_REPLICATED);
+ConVar	sk_npc_dmg_357Sig		( "sk_npc_dmg_338Mag", "3", FCVAR_REPLICATED);
+ConVar	sk_max_357Sig			( "sk_max_338Mag", "52", FCVAR_REPLICATED);
+
+ConVar	sk_plr_dmg_45ACP		( "sk_plr_dmg_45ACP", "8", FCVAR_REPLICATED);
+ConVar	sk_npc_dmg_45ACP		( "sk_npc_dmg_45ACP", "3", FCVAR_REPLICATED);
+ConVar	sk_max_45ACP			( "sk_max_45ACP", "100", FCVAR_REPLICATED);
+
+ConVar	sk_plr_dmg_50AE			( "sk_plr_dmg_50AE", "20", FCVAR_REPLICATED);
+ConVar	sk_npc_dmg_50AE			( "sk_npc_dmg_50AE", "5", FCVAR_REPLICATED);
+ConVar	sk_max_50AE				( "sk_max_50AE", "35", FCVAR_REPLICATED);
+
+ConVar	sk_plr_dmg_556MM		( "sk_plr_dmg_556MM", "8", FCVAR_REPLICATED);
+ConVar	sk_npc_dmg_556MM		( "sk_npc_dmg_556MM", "3", FCVAR_REPLICATED);
+ConVar	sk_max_556MM			( "sk_max_556MM", "90", FCVAR_REPLICATED);
+
+ConVar	sk_plr_dmg_556MM_Box	( "sk_plr_dmg_556MM_Box", "8", FCVAR_REPLICATED);
+ConVar	sk_npc_dmg_556MM_Box	( "sk_npc_dmg_556MM_Box", "3", FCVAR_REPLICATED);
+ConVar	sk_max_556MM_Box		( "sk_max_556MM_Box", "200", FCVAR_REPLICATED);
+
+ConVar	sk_plr_dmg_57MM			( "sk_plr_dmg_57MM", "4", FCVAR_REPLICATED);
+ConVar	sk_npc_dmg_57MM			( "sk_npc_dmg_57MM", "3", FCVAR_REPLICATED);
+ConVar	sk_max_57MM				( "sk_max_57MM", "100", FCVAR_REPLICATED);
+
+ConVar	sk_plr_dmg_762MM		( "sk_plr_dmg_762MM", "8", FCVAR_REPLICATED);
+ConVar	sk_npc_dmg_762MM		( "sk_npc_dmg_762MM", "3", FCVAR_REPLICATED);
+ConVar	sk_max_762MM			( "sk_max_762MM", "90", FCVAR_REPLICATED);
+
+ConVar	sk_plr_dmg_9MM			( "sk_plr_dmg_9MM", "5", FCVAR_REPLICATED);
+ConVar	sk_npc_dmg_9MM			( "sk_npc_dmg_9MM", "3", FCVAR_REPLICATED);
+ConVar	sk_max_9MM				( "sk_max_9MM", "120", FCVAR_REPLICATED);
+
+ConVar	sk_plr_dmg_taser		( "sk_plr_dmg_taser", "60", FCVAR_REPLICATED);
+ConVar	sk_npc_dmg_taser		( "sk_npc_dmg_taser", "50", FCVAR_REPLICATED);
+ConVar	sk_max_taser			( "sk_max_taser", "1", FCVAR_REPLICATED);
+
 ConVar	sk_plr_dmg_ar2			( "sk_plr_dmg_ar2","0", FCVAR_REPLICATED );
 ConVar	sk_npc_dmg_ar2			( "sk_npc_dmg_ar2","0", FCVAR_REPLICATED);
 ConVar	sk_max_ar2				( "sk_max_ar2","0", FCVAR_REPLICATED);
@@ -124,9 +169,9 @@ ConVar	sk_max_smg1				( "sk_max_smg1","0", FCVAR_REPLICATED);
 //ConVar	sk_npc_dmg_flare_round	( "sk_npc_dmg_flare_round","0", FCVAR_REPLICATED);
 //ConVar	sk_max_flare_round		( "sk_max_flare_round","0", FCVAR_REPLICATED);
 
-ConVar	sk_plr_dmg_buckshot		( "sk_plr_dmg_buckshot","0", FCVAR_REPLICATED);	
-ConVar	sk_npc_dmg_buckshot		( "sk_npc_dmg_buckshot","0", FCVAR_REPLICATED);
-ConVar	sk_max_buckshot			( "sk_max_buckshot","0", FCVAR_REPLICATED);
+ConVar	sk_plr_dmg_buckshot		( "sk_plr_dmg_buckshot","8", FCVAR_REPLICATED);	
+ConVar	sk_npc_dmg_buckshot		( "sk_npc_dmg_buckshot","3", FCVAR_REPLICATED);
+ConVar	sk_max_buckshot			( "sk_max_buckshot","30", FCVAR_REPLICATED);
 ConVar	sk_plr_num_shotgun_pellets( "sk_plr_num_shotgun_pellets","7", FCVAR_REPLICATED);
 
 ConVar	sk_plr_dmg_rpg_round	( "sk_plr_dmg_rpg_round","0", FCVAR_REPLICATED);
@@ -146,7 +191,7 @@ ConVar	sk_max_sniper_round		( "sk_max_sniper_round","0", FCVAR_REPLICATED);
 
 ConVar	sk_plr_dmg_grenade		( "sk_plr_dmg_grenade","0", FCVAR_REPLICATED);
 ConVar	sk_npc_dmg_grenade		( "sk_npc_dmg_grenade","0", FCVAR_REPLICATED);
-ConVar	sk_max_grenade			( "sk_max_grenade","0", FCVAR_REPLICATED);
+ConVar	sk_max_grenade			( "sk_max_grenade","5", FCVAR_REPLICATED);
 
 #ifdef HL2_EPISODIC
 ConVar	sk_max_hopwire			( "sk_max_hopwire", "3", FCVAR_REPLICATED);
@@ -181,6 +226,7 @@ ConVar	sk_max_gauss_round		( "sk_max_gauss_round", "0", FCVAR_REPLICATED );
 ConVar	sk_npc_dmg_gunship			( "sk_npc_dmg_gunship", "0", FCVAR_REPLICATED );
 ConVar	sk_npc_dmg_gunship_to_plr	( "sk_npc_dmg_gunship_to_plr", "0", FCVAR_REPLICATED );
 
+// SLOWBURN was removed from both functions because the blowtorch would not do any damage
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Input  : iDmgType - 
@@ -189,7 +235,7 @@ ConVar	sk_npc_dmg_gunship_to_plr	( "sk_npc_dmg_gunship_to_plr", "0", FCVAR_REPLI
 int CHalfLife2::Damage_GetTimeBased( void )
 {
 #ifdef HL2_EPISODIC
-	int iDamage = ( DMG_PARALYZE | DMG_NERVEGAS | DMG_POISON | DMG_RADIATION | DMG_DROWNRECOVER | DMG_ACID | DMG_SLOWBURN );
+	int iDamage = ( DMG_PARALYZE | DMG_NERVEGAS | DMG_POISON | DMG_RADIATION | DMG_DROWNRECOVER | DMG_ACID );
 	return iDamage;
 #else
 	return BaseClass::Damage_GetTimeBased();
@@ -206,7 +252,7 @@ bool CHalfLife2::Damage_IsTimeBased( int iDmgType )
 	// Damage types that are time-based.
 #ifdef HL2_EPISODIC
 	// This makes me think EP2 should have its own rules, but they are #ifdef all over in here.
-	return ( ( iDmgType & ( DMG_PARALYZE | DMG_NERVEGAS | DMG_POISON | DMG_RADIATION | DMG_DROWNRECOVER | DMG_SLOWBURN ) ) != 0 );
+	return ( ( iDmgType & ( DMG_PARALYZE | DMG_NERVEGAS | DMG_POISON | DMG_RADIATION | DMG_DROWNRECOVER ) ) != 0 );
 #else
 	return BaseClass::Damage_IsTimeBased( iDmgType );
 #endif
@@ -1277,6 +1323,43 @@ ConVar  alyx_darkness_force( "alyx_darkness_force", "0", FCVAR_CHEAT | FCVAR_REP
 		CBaseCombatCharacter::SetDefaultRelationship(CLASS_HACKED_ROLLERMINE,			CLASS_PLAYER_ALLY,		D_LI, 0);
 		CBaseCombatCharacter::SetDefaultRelationship(CLASS_HACKED_ROLLERMINE,			CLASS_PLAYER_ALLY_VITAL,D_LI, 0);
 		CBaseCombatCharacter::SetDefaultRelationship(CLASS_HACKED_ROLLERMINE,			CLASS_HACKED_ROLLERMINE,D_LI, 0);
+
+		// CZ Classes
+		// ------------------------------------------------------------
+		//	> CLASS_COUNTERTERRORIST
+		// ------------------------------------------------------------
+		CBaseCombatCharacter::SetDefaultRelationship(CLASS_COUNTERTERRORIST, CLASS_NONE, D_NU, 0);
+		CBaseCombatCharacter::SetDefaultRelationship(CLASS_COUNTERTERRORIST, CLASS_BULLSEYE, D_NU, 0);
+		CBaseCombatCharacter::SetDefaultRelationship(CLASS_COUNTERTERRORIST, CLASS_COUNTERTERRORIST, D_LI, 0);
+		CBaseCombatCharacter::SetDefaultRelationship(CLASS_COUNTERTERRORIST, CLASS_HOSTAGE, D_LI, 0);
+		CBaseCombatCharacter::SetDefaultRelationship(CLASS_COUNTERTERRORIST, CLASS_PLAYER, D_LI, 0);
+		CBaseCombatCharacter::SetDefaultRelationship(CLASS_COUNTERTERRORIST, CLASS_PLAYER_ALLY, D_LI, 0);
+		CBaseCombatCharacter::SetDefaultRelationship(CLASS_COUNTERTERRORIST, CLASS_PLAYER_ALLY_VITAL, D_LI, 0);
+		CBaseCombatCharacter::SetDefaultRelationship(CLASS_COUNTERTERRORIST, CLASS_TERRORIST, D_HT, 0);
+
+		// ------------------------------------------------------------
+		//	> CLASS_HOSTAGE
+		// ------------------------------------------------------------
+		CBaseCombatCharacter::SetDefaultRelationship(CLASS_HOSTAGE, CLASS_NONE, D_NU, 0);
+		CBaseCombatCharacter::SetDefaultRelationship(CLASS_HOSTAGE, CLASS_BULLSEYE, D_NU, 0);
+		CBaseCombatCharacter::SetDefaultRelationship(CLASS_HOSTAGE, CLASS_COUNTERTERRORIST, D_LI, 0);
+		CBaseCombatCharacter::SetDefaultRelationship(CLASS_HOSTAGE, CLASS_HOSTAGE, D_NU, 0);
+		CBaseCombatCharacter::SetDefaultRelationship(CLASS_HOSTAGE, CLASS_PLAYER, D_LI, 0);
+		CBaseCombatCharacter::SetDefaultRelationship(CLASS_HOSTAGE, CLASS_PLAYER_ALLY, D_LI, 0);
+		CBaseCombatCharacter::SetDefaultRelationship(CLASS_HOSTAGE, CLASS_PLAYER_ALLY_VITAL, D_LI, 0);
+		CBaseCombatCharacter::SetDefaultRelationship(CLASS_HOSTAGE, CLASS_TERRORIST, D_FR, 0);
+
+		// ------------------------------------------------------------
+		//	> CLASS_TERRORIST
+		// ------------------------------------------------------------
+		CBaseCombatCharacter::SetDefaultRelationship(CLASS_TERRORIST, CLASS_NONE, D_NU, 0);
+		CBaseCombatCharacter::SetDefaultRelationship(CLASS_TERRORIST, CLASS_BULLSEYE, D_NU, 0);
+		CBaseCombatCharacter::SetDefaultRelationship(CLASS_TERRORIST, CLASS_COUNTERTERRORIST, D_HT, 0);
+		CBaseCombatCharacter::SetDefaultRelationship(CLASS_TERRORIST, CLASS_HOSTAGE, D_LI, 0);
+		CBaseCombatCharacter::SetDefaultRelationship(CLASS_TERRORIST, CLASS_PLAYER, D_HT, 0);
+		CBaseCombatCharacter::SetDefaultRelationship(CLASS_TERRORIST, CLASS_PLAYER_ALLY, D_HT, 0);
+		CBaseCombatCharacter::SetDefaultRelationship(CLASS_TERRORIST, CLASS_PLAYER_ALLY_VITAL, D_HT, 0);
+		CBaseCombatCharacter::SetDefaultRelationship(CLASS_TERRORIST, CLASS_TERRORIST, D_LI, 0);
 	}
 
 
@@ -1314,6 +1397,10 @@ ConVar  alyx_darkness_force( "alyx_darkness_force", "0", FCVAR_CHEAT | FCVAR_REP
 			case CLASS_MISSILE:			return "CLASS_MISSILE";
 			case CLASS_FLARE:			return "CLASS_FLARE";
 			case CLASS_EARTH_FAUNA:		return "CLASS_EARTH_FAUNA";
+
+			case CLASS_HOSTAGE:			return "CLASS_HOSTAGE";
+			case CLASS_COUNTERTERRORIST:return "CLASS_COUNTERTERRORIST";
+			case CLASS_TERRORIST:		return "CLASS_TERRORIST";
 
 			default:					return "MISSING CLASS in ClassifyText()";
 		}
@@ -1797,6 +1884,29 @@ CAmmoDef *GetAmmoDef()
 	if ( !bInitted )
 	{
 		bInitted = true;
+
+		def.AddAmmoType("Blowtorch", DMG_SLOWBURN, TRACER_NONE, "sk_plr_dmg_blowtorch", "sk_npc_dmg_blowtorch", NULL, BULLET_IMPULSE(1, 500), 0);
+		def.AddAmmoType("RcBomb", DMG_BURN, TRACER_NONE, NULL, NULL, "sk_max_rcbombs", 0, 0);
+
+		def.AddAmmoType("338Mag", DMG_BULLET, TRACER_LINE_AND_WHIZ, "sk_plr_dmg_338Mag", "sk_npc_dmg_338Mag", "sk_max_338Mag", BULLET_IMPULSE(800, 8000), 0); // Crossbow force
+		def.AddAmmoType("45ACP", DMG_BULLET, TRACER_LINE_AND_WHIZ, "sk_plr_dmg_45ACP", "sk_npc_dmg_45ACP", "sk_max_45ACP", BULLET_IMPULSE(200, 1225), 0);
+		def.AddAmmoType("50AE", DMG_BULLET, TRACER_LINE_AND_WHIZ, "sk_plr_dmg_50AE", "sk_npc_dmg_50AE", "sk_max_50AE", BULLET_IMPULSE(800, 5000), 0); // 357 force
+		def.AddAmmoType("556MM", DMG_BULLET, TRACER_LINE_AND_WHIZ, "sk_plr_dmg_556MM", "sk_npc_dmg_556MM", "sk_max_556MM", BULLET_IMPULSE(200, 1225), 0);
+		def.AddAmmoType("556MM_Box", DMG_BULLET, TRACER_LINE_AND_WHIZ, "sk_plr_dmg_556MM_Box", "sk_npc_dmg_556MM_Box", "sk_max_556MM_Box", BULLET_IMPULSE(200, 1225), 0);
+		def.AddAmmoType("57MM", DMG_BULLET, TRACER_LINE_AND_WHIZ, "sk_plr_dmg_57MM", "sk_npc_dmg_57MM", "sk_max_57MM", BULLET_IMPULSE(200, 1225), 0);
+		def.AddAmmoType("762MM", DMG_BULLET, TRACER_LINE_AND_WHIZ, "sk_plr_dmg_762MM", "sk_npc_dmg_762MM", "sk_max_762MM", BULLET_IMPULSE(200, 1225), 0);
+		def.AddAmmoType("9MM", DMG_BULLET, TRACER_LINE_AND_WHIZ, "sk_plr_dmg_9MM", "sk_npc_dmg_9MM", "sk_max_9MM", BULLET_IMPULSE(200, 1225), 0);
+		def.AddAmmoType("357SIG", DMG_BULLET, TRACER_LINE_AND_WHIZ, "sk_plr_dmg_357Sig", "sk_npc_dmg_357Sig", "sk_max_357Sig", BULLET_IMPULSE(200, 1225), 0);
+
+		def.AddAmmoType("AMMO_TYPE_TASERCHARGE", DMG_SHOCK, TRACER_LINE_AND_WHIZ, "sk_plr_dmg_taser", "sk_npc_dmg_taser", "sk_max_taser", BULLET_IMPULSE(200, 1225), 0);
+
+		// New Grenades
+		def.AddAmmoType("AMMO_TYPE_DECOY", DMG_BURN, TRACER_NONE, 0, 0, "sk_max_grenade", 0, 0);
+		def.AddAmmoType("AMMO_TYPE_FLASHBANG", DMG_BURN, TRACER_NONE, 0, 0, "sk_max_grenade", 0, 0);
+		def.AddAmmoType("AMMO_TYPE_HEGRENADE", DMG_BLAST, TRACER_NONE, "sk_plr_dmg_grenade", "sk_npc_dmg_grenade", "sk_max_grenade", 0, 0);
+		def.AddAmmoType("AMMO_TYPE_INCGRENADE", DMG_BURN, TRACER_NONE, "sk_plr_dmg_grenade", "sk_npc_dmg_grenade", "sk_max_grenade", 0, 0);
+		def.AddAmmoType("AMMO_TYPE_MOLOTOV", DMG_BURN, TRACER_NONE, "sk_plr_dmg_grenade", "sk_npc_dmg_grenade", "sk_max_grenade", 0, 0);
+		def.AddAmmoType("AMMO_TYPE_SMOKEGRENADE", DMG_BURN, TRACER_NONE, 0, 0, "sk_max_grenade", 0, 0);
 
 		def.AddAmmoType("AR2",				DMG_BULLET,					TRACER_LINE_AND_WHIZ,	"sk_plr_dmg_ar2",			"sk_npc_dmg_ar2",			"sk_max_ar2",			BULLET_IMPULSE(200, 1225), 0 );
 		def.AddAmmoType("AlyxGun",			DMG_BULLET,					TRACER_LINE,			"sk_plr_dmg_alyxgun",		"sk_npc_dmg_alyxgun",		"sk_max_alyxgun",		BULLET_IMPULSE(200, 1225), 0 );

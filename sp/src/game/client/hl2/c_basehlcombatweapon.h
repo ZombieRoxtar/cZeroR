@@ -33,4 +33,19 @@ public:
 	DECLARE_CLIENTCLASS();
 };
 
+// CS-esque Weapons
+class C_BaseAdvancedWeapon : public C_BaseHLCombatWeapon
+{
+public:
+	DECLARE_CLASS(C_BaseAdvancedWeapon, C_BaseHLCombatWeapon);
+	DECLARE_CLIENTCLASS();
+};
+
+class C_WeaponMultiGrenade : public C_BaseHLCombatWeapon
+{
+public:
+	DECLARE_CLASS(C_WeaponMultiGrenade, C_BaseHLCombatWeapon);
+	DECLARE_CLIENTCLASS();
+};
+
 #endif // C_BASEHLCOMBATWEAPON_H

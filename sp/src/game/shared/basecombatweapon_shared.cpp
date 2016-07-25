@@ -75,6 +75,8 @@ CBaseCombatWeapon::CBaseCombatWeapon()
 
 	// Defaults to zero
 	m_nViewModelIndex	= 0;
+	m_vCone = 0;
+	m_nZoomLevel = 0;
 
 	m_bFlipViewModel	= false;
 
@@ -306,6 +308,189 @@ void CBaseCombatWeapon::Precache( void )
 const FileWeaponInfo_t &CBaseCombatWeapon::GetWpnData( void ) const
 {
 	return *GetFileWeaponInfoFromHandle( m_hWeaponFileInfo );
+}
+
+//-----------------------------------------------------------------------------
+bool CBaseCombatWeapon::FullAuto(void) const
+{
+	return GetWpnData().m_bFullAuto;
+}
+//-----------------------------------------------------------------------------
+int CBaseCombatWeapon::GetPlayerSpeedValue(void) const
+{
+	if (m_nZoomLevel.Get())
+		return GetPlayerSpeedValueAlt();
+	return GetWpnData().m_nPlayerSpeed;
+}
+//-----------------------------------------------------------------------------
+float CBaseCombatWeapon::GetRecoilAngle(void) const
+{
+	return GetWpnData().m_fRecoilAngle;
+}
+//-----------------------------------------------------------------------------
+float CBaseCombatWeapon::GetRecoilAngleVariance(void) const
+{
+	return GetWpnData().m_fRecoilAngleVariance;
+}
+//-----------------------------------------------------------------------------
+float CBaseCombatWeapon::GetRecoilMagnitude(void) const
+{
+	return GetWpnData().m_fRecoilMagnitude;
+}
+//-----------------------------------------------------------------------------
+float CBaseCombatWeapon::GetRecoilMagnitudeVariance(void) const
+{
+	return GetWpnData().m_fRecoilMagnitudeVariance;
+}
+//-----------------------------------------------------------------------------
+float CBaseCombatWeapon::GetInaccuracyCrouch(void) const
+{
+	if (m_nZoomLevel.Get())
+		return GetInaccuracyCrouchAlt();
+	return GetWpnData().m_fInaccuracyCrouch;
+}
+//-----------------------------------------------------------------------------
+float CBaseCombatWeapon::GetInaccuracyStand(void) const
+{
+	if (m_nZoomLevel.Get())
+		return GetInaccuracyStandAlt();
+	return GetWpnData().m_fInaccuracyStand;
+}
+//-----------------------------------------------------------------------------
+float CBaseCombatWeapon::GetInaccuracyJump(void) const
+{
+	if (m_nZoomLevel.Get())
+		return GetInaccuracyJumpAlt();
+	return GetWpnData().m_fInaccuracyJump;
+}
+//-----------------------------------------------------------------------------
+float CBaseCombatWeapon::GetInaccuracyLand(void) const
+{
+	if (m_nZoomLevel.Get())
+		return GetInaccuracyLandAlt();
+	return GetWpnData().m_fInaccuracyLand;
+}
+//-----------------------------------------------------------------------------
+float CBaseCombatWeapon::GetInaccuracyLadder(void) const
+{
+	if (m_nZoomLevel.Get())
+		return GetInaccuracyLadderAlt();
+	return GetWpnData().m_fInaccuracyLadder;
+}
+//-----------------------------------------------------------------------------
+float CBaseCombatWeapon::GetInaccuracyFire(void) const
+{
+	if (m_nZoomLevel.Get())
+		return GetInaccuracyFireAlt();
+	return GetWpnData().m_fInaccuracyFire;
+}
+//-----------------------------------------------------------------------------
+float CBaseCombatWeapon::GetInaccuracyMove(void) const
+{
+	if (m_nZoomLevel.Get())
+		return GetInaccuracyMoveAlt();
+	return GetWpnData().m_fInaccuracyMove;
+}
+//-----------------------------------------------------------------------------
+int CBaseCombatWeapon::GetPlayerSpeedValueAlt(void) const
+{
+	return GetWpnData().m_nPlayerSpeedAlt;
+}
+//-----------------------------------------------------------------------------
+int CBaseCombatWeapon::GetZoomLevels(void) const
+{
+	return GetWpnData().m_nZoomLevels;
+}
+//-----------------------------------------------------------------------------
+int CBaseCombatWeapon::GetZoomFov(int level = 1) const
+{
+	if (level > 1)
+		return GetWpnData().m_nZoomFov2;
+	return GetWpnData().m_nZoomFov1;
+}
+//-----------------------------------------------------------------------------
+int CBaseCombatWeapon::GetZoomFov1(void) const
+{
+	return GetWpnData().m_nZoomFov1;
+}
+//-----------------------------------------------------------------------------
+int CBaseCombatWeapon::GetZoomFov2(void) const
+{
+	return GetWpnData().m_nZoomFov2;
+}
+//-----------------------------------------------------------------------------
+float CBaseCombatWeapon::GetZoomTime(int level = 0) const
+{
+	if (level == 2)
+		return GetWpnData().m_flZoomTime2;
+	if (level == 1)
+		return GetWpnData().m_flZoomTime1;
+	return GetWpnData().m_flZoomTime0;
+}
+//-----------------------------------------------------------------------------
+float CBaseCombatWeapon::GetZoomTime0(void) const
+{
+	return GetWpnData().m_flZoomTime0;
+}
+//-----------------------------------------------------------------------------
+float CBaseCombatWeapon::GetZoomTime1(void) const
+{
+	return GetWpnData().m_flZoomTime1;
+}
+//-----------------------------------------------------------------------------
+float CBaseCombatWeapon::GetZoomTime2(void) const
+{
+	return GetWpnData().m_flZoomTime2;
+}
+//-----------------------------------------------------------------------------
+bool CBaseCombatWeapon::HideViewModelWhenZoomed(void) const
+{
+	return GetWpnData().m_bHideViewModelWhenZoomed;
+}
+//-----------------------------------------------------------------------------
+const char *CBaseCombatWeapon::GetZoomInSound(void) const
+{
+	return GetWpnData().m_szZoomInSound;
+}
+//-----------------------------------------------------------------------------
+const char *CBaseCombatWeapon::GetZoomOutSound(void) const
+{
+	return GetWpnData().m_szZoomOutSound;
+}
+//-----------------------------------------------------------------------------
+float CBaseCombatWeapon::GetInaccuracyCrouchAlt(void) const
+{
+	return GetWpnData().m_fInaccuracyCrouchAlt;
+}
+//-----------------------------------------------------------------------------
+float CBaseCombatWeapon::GetInaccuracyStandAlt(void) const
+{
+	return GetWpnData().m_fInaccuracyStandAlt;
+}
+//-----------------------------------------------------------------------------
+float CBaseCombatWeapon::GetInaccuracyJumpAlt(void) const
+{
+	return GetWpnData().m_fInaccuracyJumpAlt;
+}
+//-----------------------------------------------------------------------------
+float CBaseCombatWeapon::GetInaccuracyLandAlt(void) const
+{
+	return GetWpnData().m_fInaccuracyLandAlt;
+}
+//-----------------------------------------------------------------------------
+float CBaseCombatWeapon::GetInaccuracyLadderAlt(void) const
+{
+	return GetWpnData().m_fInaccuracyLadderAlt;
+}
+//-----------------------------------------------------------------------------
+float CBaseCombatWeapon::GetInaccuracyFireAlt(void) const
+{
+	return GetWpnData().m_fInaccuracyFireAlt;
+}
+//-----------------------------------------------------------------------------
+float CBaseCombatWeapon::GetInaccuracyMoveAlt(void) const
+{
+	return GetWpnData().m_fInaccuracyMoveAlt;
 }
 
 //-----------------------------------------------------------------------------
@@ -1821,8 +2006,7 @@ int CBaseCombatWeapon::GetBulletType( void )
 //-----------------------------------------------------------------------------
 const Vector& CBaseCombatWeapon::GetBulletSpread( void )
 {
-	static Vector cone = VECTOR_CONE_15DEGREES;
-	return cone;
+	return m_vCone;
 }
 
 //-----------------------------------------------------------------------------
@@ -2307,11 +2491,13 @@ void CBaseCombatWeapon::PrimaryAttack( void )
 
 	pPlayer->FireBullets( info );
 
+#ifdef HUD_SOUNDS
 	if (!m_iClip1 && pPlayer->GetAmmoCount(m_iPrimaryAmmoType) <= 0)
 	{
 		// HEV suit - indicate out of ammo condition
 		pPlayer->SetSuitUpdate("!HEV_AMO0", FALSE, 0); 
 	}
+#endif
 
 	//Add our view kick in
 	AddViewKick();
@@ -2536,6 +2722,9 @@ BEGIN_PREDICTION_DATA( CBaseCombatWeapon )
 
 	DEFINE_PRED_FIELD( m_nViewModelIndex, FIELD_INTEGER, FTYPEDESC_INSENDTABLE ),
 
+	DEFINE_PRED_FIELD_TOL(m_vCone, FIELD_VECTOR, FTYPEDESC_INSENDTABLE, TD_MSECTOLERANCE),
+	DEFINE_PRED_FIELD(m_nZoomLevel, FIELD_INTEGER, FTYPEDESC_INSENDTABLE),
+
 	// Not networked
 
 	DEFINE_PRED_FIELD( m_flTimeWeaponIdle, FIELD_FLOAT, FTYPEDESC_INSENDTABLE ),
@@ -2603,6 +2792,9 @@ BEGIN_DATADESC( CBaseCombatWeapon )
 	DEFINE_FIELD( m_iSecondaryAmmoCount, FIELD_INTEGER ),
 
 	DEFINE_FIELD( m_nViewModelIndex, FIELD_INTEGER ),
+
+	DEFINE_FIELD(m_vCone, FIELD_VECTOR),
+	DEFINE_FIELD(m_nZoomLevel, FIELD_INTEGER),
 
 // don't save these, init to 0 and regenerate
 //	DEFINE_FIELD( m_flNextEmptySoundTime, FIELD_TIME ),
@@ -2769,6 +2961,9 @@ BEGIN_NETWORK_TABLE_NOBASE( CBaseCombatWeapon, DT_LocalWeaponData )
 
 	SendPropInt( SENDINFO( m_bFlipViewModel ) ),
 
+	SendPropVector(SENDINFO(m_vCone)),
+	SendPropInt(SENDINFO(m_nZoomLevel)),
+
 #if defined( TF_DLL )
 	SendPropExclude( "DT_AnimTimeMustBeFirst" , "m_flAnimTime" ),
 #endif
@@ -2782,6 +2977,9 @@ BEGIN_NETWORK_TABLE_NOBASE( CBaseCombatWeapon, DT_LocalWeaponData )
 	RecvPropInt( RECVINFO( m_nViewModelIndex ) ),
 
 	RecvPropBool( RECVINFO( m_bFlipViewModel ) ),
+
+	RecvPropVector(RECVINFO(m_vCone)),
+	RecvPropInt(RECVINFO(m_nZoomLevel)),
 
 #endif
 END_NETWORK_TABLE()

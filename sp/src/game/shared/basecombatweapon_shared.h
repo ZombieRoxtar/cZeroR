@@ -359,6 +359,43 @@ public:
 	virtual bool			UsesClipsForAmmo2( void ) const;
 	bool					IsMeleeWeapon() const;
 
+	// New vars from beefier weapon scripts
+	virtual bool				FullAuto(void) const;
+	virtual int					GetPlayerSpeedValue(void) const; // "MaxPlayerSpeed" from the weapon's script.
+	virtual float				GetRecoilAngle(void) const;
+	virtual float				GetRecoilAngleVariance(void) const;
+	virtual float				GetRecoilMagnitude(void) const;
+	virtual float				GetRecoilMagnitudeVariance(void) const;
+	virtual float				GetInaccuracyCrouch(void) const;
+	virtual float				GetInaccuracyStand(void) const;
+	virtual float				GetInaccuracyJump(void) const;
+	virtual float				GetInaccuracyLand(void) const;
+	virtual float				GetInaccuracyLadder(void) const;
+	virtual float				GetInaccuracyFire(void) const;
+	virtual float				GetInaccuracyMove(void) const;
+
+	virtual int					GetPlayerSpeedValueAlt(void) const; // "MaxPlayerSpeedAlt" from the weapon's script.
+	virtual int					GetZoomLevels(void) const;
+	virtual int					GetZoomFov1(void) const;
+	virtual int					GetZoomFov2(void) const;
+	virtual float				GetZoomTime0(void) const;
+	virtual float				GetZoomTime1(void) const;
+	virtual float				GetZoomTime2(void) const;
+	virtual bool				HideViewModelWhenZoomed(void) const;
+	virtual const char			*GetZoomInSound(void) const;
+	virtual const char			*GetZoomOutSound(void) const;
+
+	virtual float				GetZoomTime(int) const;
+	virtual int					GetZoomFov(int) const;
+
+	virtual float				GetInaccuracyCrouchAlt(void) const; // Used by Zooming Weapons
+	virtual float				GetInaccuracyStandAlt(void) const;
+	virtual float				GetInaccuracyJumpAlt(void) const;
+	virtual float				GetInaccuracyLandAlt(void) const;
+	virtual float				GetInaccuracyLadderAlt(void) const;
+	virtual float				GetInaccuracyFireAlt(void) const;
+	virtual float				GetInaccuracyMoveAlt(void) const;
+
 	// derive this function if you mod uses encrypted weapon info files
 	virtual const unsigned char *GetEncryptionKey( void );
 
@@ -579,6 +616,9 @@ public:
 	int						WeaponState() const { return m_iState; }
 
 	// Weapon data
+	CNetworkVar(Vector, m_vCone); // New networked accuracy cone
+	CNetworkVar(int, m_nZoomLevel); // The zoom level for new snipers
+
 	CNetworkVar( int, m_iState );				// See WEAPON_* definition
 	string_t				m_iszName;				// Classname of this weapon.
 	CNetworkVar( int, m_iPrimaryAmmoType );		// "primary" ammo index into the ammo info array 

@@ -27,6 +27,8 @@ using namespace vgui;
 #define HUD_POSTURE_FADE_TIME 0.4f
 #define CROUCHING_CHARACTER_INDEX 92  // index of the crouching dude in the TTF font
 
+static ConVar hud_posture("hud_posture", "1", FCVAR_CLIENTDLL | FCVAR_ARCHIVE, "Shows a posture indicator on the HUD." );
+
 //-----------------------------------------------------------------------------
 // Purpose: Shows the sprint power bar
 //-----------------------------------------------------------------------------
@@ -38,7 +40,6 @@ public:
 	CHudPosture( const char *pElementName );
 	bool			ShouldDraw( void );
 
-#ifdef _X360 	// if not xbox 360, don't waste code space on this
 	virtual void	Init( void );
 	virtual void	Reset( void );
 	virtual void	OnTick( void );
@@ -58,7 +59,6 @@ private:
 		   FADING_UP, 
 		   FADING_DOWN
 	} m_kIsFading;
-#endif
 };	
 
 
@@ -85,10 +85,10 @@ CHudPosture::CHudPosture( const char *pElementName ) : CHudElement( pElementName
 
 	SetHiddenBits( HIDEHUD_HEALTH | HIDEHUD_PLAYERDEAD | HIDEHUD_NEEDSUIT );
 
-	if( IsX360() )
-	{
+	//if( IsX360() )
+	//{
 		vgui::ivgui()->AddTickSignal( GetVPanel(), (1000/HUD_POSTURE_UPDATES_PER_SECOND) );
-	}
+	//}
 }
 
 //-----------------------------------------------------------------------------
@@ -98,15 +98,9 @@ CHudPosture::CHudPosture( const char *pElementName ) : CHudElement( pElementName
 //-----------------------------------------------------------------------------
 bool CHudPosture::ShouldDraw()
 {
-#ifdef _X360
-	return ( m_duckTimeout >= gpGlobals->curtime &&
+	return hud_posture.GetBool() && ( m_duckTimeout >= gpGlobals->curtime &&
 		CHudElement::ShouldDraw() );
-#else
-	return false;
-#endif
 }
-
-#ifdef _X360
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -190,6 +184,3 @@ void CHudPosture::Paint()
 	surface()->DrawSetTextPos( m_IconX, m_IconY );
 	surface()->DrawUnicodeChar( duck_char );
 }
-
-#endif
-

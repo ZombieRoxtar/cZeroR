@@ -29,11 +29,20 @@
 #define SIZE_AMMO_AR2_LARGE			100
 #define SIZE_AMMO_RPG_ROUND			1
 #define SIZE_AMMO_SMG1_GRENADE		1
-#define SIZE_AMMO_BUCKSHOT			20
-#define SIZE_AMMO_357				6
+#define SIZE_AMMO_BUCKSHOT			32 // All CS shotguns use this
+#define SIZE_AMMO_357				52 // Use this for 357sig (P250)
 #define SIZE_AMMO_357_LARGE			20
 #define SIZE_AMMO_CROSSBOW			6
 #define	SIZE_AMMO_AR2_ALTFIRE		1
+
+#define SIZE_AMMO_338MAG			30  // AWP
+#define SIZE_AMMO_45ACP				100	// 45 USP, Mac 10, and UMP45
+#define SIZE_AMMO_50AE				35	// Desert Eagle
+#define SIZE_AMMO_556MM				90	// Galil, Famas, M4A1, SIG SG552, and Krieg 552
+#define SIZE_AMMO_556MM_BOX			200 // M249
+#define SIZE_AMMO_57MM				100	// Five-Seven, and P90
+#define SIZE_AMMO_762MM				90	// AK-47, GS/SG-1, and Scout
+#define SIZE_AMMO_9MM				120	// Dual Elites, Glock 18, MP5, and TMP
 
 #define SF_ITEM_START_CONSTRAINED	0x00000001
 

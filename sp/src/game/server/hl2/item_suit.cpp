@@ -20,7 +20,9 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
+#ifdef HUD_SOUNDS
 #define SF_SUIT_SHORTLOGON		0x0001
+#endif
 
 class CItemSuit : public CItem
 {
@@ -43,12 +45,12 @@ public:
 	{
 		if ( pPlayer->IsSuitEquipped() )
 			return FALSE;
-
+#ifdef HUD_SOUNDS
 		if ( m_spawnflags & SF_SUIT_SHORTLOGON )
 			UTIL_EmitSoundSuit(pPlayer->edict(), "!HEV_A0");		// short version of suit logon,
 		else
 			UTIL_EmitSoundSuit(pPlayer->edict(), "!HEV_AAx");	// long version of suit logon
-
+#endif
 		pPlayer->EquipSuit();
 				
 		return true;

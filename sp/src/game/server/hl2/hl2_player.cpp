@@ -79,8 +79,8 @@ extern int gEvilImpulse101;
 
 ConVar sv_autojump( "sv_autojump", "0" );
 
-ConVar hl2_walkspeed( "hl2_walkspeed", "150" );
-ConVar hl2_normspeed( "hl2_normspeed", "190" );
+ConVar hl2_walkspeed( "hl2_walkspeed", "200" );
+ConVar hl2_normspeed( "hl2_normspeed", "250" ); // Knife speed
 ConVar hl2_sprintspeed( "hl2_sprintspeed", "320" );
 
 ConVar hl2_darkness_flashlight_factor ( "hl2_darkness_flashlight_factor", "1" );
@@ -90,9 +90,11 @@ ConVar hl2_darkness_flashlight_factor ( "hl2_darkness_flashlight_factor", "1" );
 	#define	HL2_NORM_SPEED 190
 	#define	HL2_SPRINT_SPEED 320
 #else
-	#define	HL2_WALK_SPEED hl2_walkspeed.GetFloat()
-	#define	HL2_NORM_SPEED hl2_normspeed.GetFloat()
-	#define	HL2_SPRINT_SPEED hl2_sprintspeed.GetFloat()
+// New function added to calculate player speed with respect to weapon weight
+// TODO: Consider a better sprint/walk solution
+#define	HL2_WALK_SPEED ( GetWeightedSpeed() - 40 )
+#define	HL2_NORM_SPEED GetWeightedSpeed()
+#define	HL2_SPRINT_SPEED ( GetWeightedSpeed() + 70 )
 #endif
 
 ConVar player_showpredictedposition( "player_showpredictedposition", "0" );
@@ -513,9 +515,9 @@ void CHL2_Player::HandleSpeedChanges( void )
 	}
 
 	bool bIsWalking = IsWalking();
-	// have suit, pressing button, not sprinting or ducking
-	bool bWantWalking;
-	
+	// have suit, pressing button, not sprinting or ducking --UNDONE: Why force the walk speed w/o the suit?
+	bool bWantWalking = (m_nButtons & IN_WALK) && !IsSprinting() && !(m_nButtons & IN_DUCK);
+	/*
 	if( IsSuitEquipped() )
 	{
 		bWantWalking = (m_nButtons & IN_WALK) && !IsSprinting() && !(m_nButtons & IN_DUCK);
@@ -524,6 +526,7 @@ void CHL2_Player::HandleSpeedChanges( void )
 	{
 		bWantWalking = true;
 	}
+	//*/
 	
 	if( bIsWalking != bWantWalking )
 	{
@@ -1123,8 +1126,9 @@ void CHL2_Player::Spawn(void)
 	//
 	//m_flMaxspeed = 320;
 
-	if ( !IsSuitEquipped() )
-		 StartWalking();
+	// Don't make them walk just because they don't have a suit
+	//if ( !IsSuitEquipped() )
+	//	 StartWalking();
 
 	SuitPower_SetCharge( 100 );
 
@@ -1229,14 +1233,15 @@ void CHL2_Player::StopSprinting( void )
 		SuitPower_RemoveDevice( SuitDeviceSprint );
 	}
 
-	if( IsSuitEquipped() )
-	{
+	// Enable running w/o suit
+	//if( IsSuitEquipped() )
+	//{
 		SetMaxSpeed( HL2_NORM_SPEED );
-	}
-	else
-	{
-		SetMaxSpeed( HL2_WALK_SPEED );
-	}
+	//}
+	//else
+	//{
+	//	SetMaxSpeed( HL2_WALK_SPEED );
+	//}
 
 	m_fIsSprinting = false;
 
@@ -1288,7 +1293,7 @@ bool CHL2_Player::CanZoom( CBaseEntity *pRequester )
 	if ( IsZooming() )
 		return false;
 
-	//Check our weapon
+	// TODO: Check our weapon!
 
 	return true;
 }
@@ -1312,10 +1317,14 @@ void CHL2_Player::ToggleZoom(void)
 //-----------------------------------------------------------------------------
 void CHL2_Player::StartZooming( void )
 {
-	int iFOV = 25;
-	if ( SetFOV( this, iFOV, 0.4f ) )
+	// No zooming in CS, but leave it in as a cheat
+	if (sv_cheats->GetBool())
 	{
-		m_HL2Local.m_bZooming = true;
+		int iFOV = 25;
+		if (SetFOV(this, iFOV, 0.4f))
+		{
+			m_HL2Local.m_bZooming = true;
+		}
 	}
 }
 
@@ -1912,8 +1921,9 @@ bool CHL2_Player::SuitPower_AddDevice( const CSuitPowerDevice &device )
 	if( m_HL2Local.m_bitsActiveDevices & device.GetDeviceID() )
 		return false;
 
-	if( !IsSuitEquipped() )
-		return false;
+	// The suit is sort of abstract in CS, Allowing devices for now
+	//if( !IsSuitEquipped() )
+	//	return false;
 
 	m_HL2Local.m_bitsActiveDevices |= device.GetDeviceID();
 	m_flSuitPowerLoad += device.GetDeviceDrainRate();
@@ -2014,6 +2024,38 @@ bool CHL2_Player::ApplyBattery( float powerMultiplier )
 }
 
 //-----------------------------------------------------------------------------
+// Purpose: New item gives 100 armor (usually) and the suit
+//-----------------------------------------------------------------------------
+bool CHL2_Player::ApplyArmor(const bool skip_armor = false)
+{
+	const float MAX_NORMAL_BATTERY = 100;
+	if (!IsSuitEquipped())
+	{
+		EquipSuit(false);
+	}
+
+	if (ArmorValue() < MAX_NORMAL_BATTERY)
+	{
+		if (!skip_armor)
+		{
+			IncrementArmorValue(MAX_NORMAL_BATTERY);
+
+			CPASAttenuationFilter filter(this, "BaseCombatCharacter.ItemPickup2");
+			EmitSound(filter, entindex(), "BaseCombatCharacter.ItemPickup2");
+
+			CSingleUserRecipientFilter user(this);
+			user.MakeReliable();
+
+			UserMessageBegin(user, "ItemPickup");
+			WRITE_STRING("item_armor");
+			MessageEnd();
+		}
+		return true;
+	}
+	return false;
+}
+
+//-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 int CHL2_Player::FlashlightIsOn( void )
 {
@@ -2033,10 +2075,12 @@ void CHL2_Player::FlashlightTurnOn( void )
 		if( !SuitPower_AddDevice( SuitDeviceFlashlight ) )
 			return;
 	}
-#ifdef HL2_DLL
-	if( !IsSuitEquipped() )
-		return;
-#endif
+	
+	// CS has a weapon-based flashlight, so the suit requirement has to go
+//#ifdef HL2_DLL
+	//if( !IsSuitEquipped() )
+		//return;
+//#endif
 
 	AddEffects( EF_DIMLIGHT );
 	EmitSound( "HL2Player.FlashLightOn" );
@@ -3326,8 +3370,27 @@ bool CHL2_Player::Weapon_Switch( CBaseCombatWeapon *pWeapon, int viewmodelindex 
 	{
 		StopZooming();
 	}
+	
+	// Baseclass code runs first so that GetWeightedSpeed() sees the NEW weapon
+	bool bRetVal = BaseClass::Weapon_Switch(pWeapon, viewmodelindex);
 
-	return BaseClass::Weapon_Switch( pWeapon, viewmodelindex );
+	if (IsSprinting())
+	{
+		SetMaxSpeed(HL2_SPRINT_SPEED);
+	}
+	else
+	{
+		if (IsWalking())
+		{
+			SetMaxSpeed(HL2_WALK_SPEED);
+		}
+		else
+		{
+			SetMaxSpeed(HL2_NORM_SPEED);
+		}
+	}
+
+	return bRetVal;
 }
 
 
@@ -3737,6 +3800,23 @@ void CHL2_Player::Splash( void )
 		DispatchEffect( "watersplash", data );
 	}
 }
+
+//-----------------------------------------------------------------------------
+// Purpose: New function to calculate player speed with respect to weapon weight
+//-----------------------------------------------------------------------------
+int CHL2_Player::GetWeightedSpeed(void)
+{
+	int nRetVal = hl2_normspeed.GetInt();
+	if (GetActiveWeapon())
+	{
+		if (GetActiveWeapon()->GetPlayerSpeedValue())
+		{
+			nRetVal = GetActiveWeapon()->GetPlayerSpeedValue();
+		}
+	}
+	return nRetVal;
+}
+
 
 CLogicPlayerProxy *CHL2_Player::GetPlayerProxy( void )
 {

@@ -41,5 +41,6 @@ public:
 
 extern IClientMode *GetClientModeNormal();
 extern vgui::HScheme g_hVGuiCombineScheme;
+extern vgui::HScheme g_hVGuiC4Scheme;
 
 #endif // CLIENTMODE_HLNORMAL_H

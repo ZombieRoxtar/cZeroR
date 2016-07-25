@@ -2049,6 +2049,85 @@ void CBasePlayer::SetPlayerUnderwater( bool state )
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Purpose: data accessors, mostly for zones
+//-----------------------------------------------------------------------------
+void CBasePlayer::SetPlayerInZoneStealth(bool state)
+{
+	if (m_bPlayerInZoneStealth != state)
+	{
+		m_bPlayerInZoneStealth = state;
+	}
+}
+void CBasePlayer::SetPlayerInZoneRcBomb(bool state)
+{
+	if (m_bPlayerInZoneRcBomb != state)
+	{
+		m_bPlayerInZoneRcBomb = state;
+	}
+}
+void CBasePlayer::SetPlayerInZoneBlowtorch(bool state)
+{
+	if (m_bPlayerInZoneBlowtorch != state)
+	{
+		m_bPlayerInZoneBlowtorch = state;
+	}
+}
+void CBasePlayer::SetPlayerInZoneFiberopticCamera(bool state)
+{
+	if (m_bPlayerInZoneFiberopticCamera != state)
+	{
+		m_bPlayerInZoneFiberopticCamera = state;
+	}
+}
+void CBasePlayer::SetPlayerInZoneRadio(bool state)
+{
+	if (m_bPlayerInZoneRadio != state)
+	{
+		m_bPlayerInZoneRadio = state;
+	}
+}
+void CBasePlayer::SetPlayerInZoneDefuse(bool state)
+{
+	if (m_bPlayerInZoneDefuse != state)
+	{
+		m_bPlayerInZoneDefuse = state;
+	}
+}
+void CBasePlayer::SetPlayerInZoneDigitalCamera(bool state)
+{
+	if (m_bPlayerInZoneDigitalCamera != state)
+	{
+		m_bPlayerInZoneDigitalCamera = state;
+	}
+}
+void CBasePlayer::SetPlayerInZoneBriefcase(bool state)
+{
+	if (m_bPlayerInZoneBriefcase != state)
+	{
+		m_bPlayerInZoneBriefcase = state;
+	}
+}
+void CBasePlayer::SetPlayerInZoneRescue(bool state)
+{
+	if (m_bPlayerInZoneRescue != state)
+	{
+		m_bPlayerInZoneRescue = state;
+	}
+}
+void CBasePlayer::SetPlayerHasNVGs(bool state)
+{
+	if (m_bPlayerHasNVGs != state)
+	{
+		m_bPlayerHasNVGs = state;
+	}
+}
+
+void CBasePlayer::SetDefuseProgress(float progress)
+{
+	m_flDefuseProgress = progress;
+}
+
 
 void CBasePlayer::SetPreviouslyPredictedOrigin( const Vector &vecAbsOrigin )
 {

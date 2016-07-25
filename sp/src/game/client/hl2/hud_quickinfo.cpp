@@ -262,6 +262,7 @@ void CHUDQuickInfo::Paint()
 	
 	// Check our health for a warning
 	int	health	= player->GetHealth();
+#ifdef HUD_SOUNDS
 	if ( health != m_lastHealth )
 	{
 		UpdateEventTime();
@@ -283,9 +284,11 @@ void CHUDQuickInfo::Paint()
 			m_warnHealth = false;
 		}
 	}
+#endif
 
 	// Check our ammo for a warning
 	int	ammo = pWeapon->Clip1();
+#ifdef HUD_SOUNDS
 	if ( ammo != m_lastAmmo )
 	{
 		UpdateEventTime();
@@ -311,6 +314,7 @@ void CHUDQuickInfo::Paint()
 			m_warnAmmo = false;
 		}
 	}
+#endif
 
 	Color clrNormal = gHUD.m_clrNormal;
 	clrNormal[3] = 255 * scalar;

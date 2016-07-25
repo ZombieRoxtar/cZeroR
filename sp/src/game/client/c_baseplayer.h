@@ -119,6 +119,30 @@ public:
 	void				CalcViewRoll( QAngle& eyeAngles );
 	void				CreateWaterEffects( void );
 
+	// Zone var accessor functions
+	virtual void			SetDefuseProgress(float progress);
+	virtual void			SetPlayerInZoneStealth(bool state);
+	virtual void			SetPlayerInZoneRcBomb(bool state);
+	virtual void			SetPlayerInZoneBlowtorch(bool state);
+	virtual void			SetPlayerInZoneFiberopticCamera(bool state);
+	virtual void			SetPlayerInZoneRadio(bool state);
+	virtual void			SetPlayerInZoneDefuse(bool state);
+	virtual void			SetPlayerInZoneDigitalCamera(bool state);
+	virtual void			SetPlayerInZoneBriefcase(bool state);
+	virtual void			SetPlayerInZoneRescue(bool state);
+	virtual void			SetPlayerHasNVGs(bool state);
+	bool					IsPlayerInZoneStealth(void) { return m_bPlayerInZoneStealth; }
+	bool					IsPlayerInZoneRcBomb(void) { return m_bPlayerInZoneRcBomb; }
+	bool					IsPlayerInZoneBlowtorch(void) { return m_bPlayerInZoneBlowtorch; }
+	bool					IsPlayerInZoneFiberopticCamera(void) { return m_bPlayerInZoneFiberopticCamera; }
+	bool					IsPlayerInZoneRadio(void) { return m_bPlayerInZoneRadio; }
+	bool					IsPlayerInZoneDefuse(void) { return m_bPlayerInZoneDefuse; }
+	bool					IsPlayerInZoneDigitalCamera(void) { return m_bPlayerInZoneDigitalCamera; }
+	bool					IsPlayerInZoneBriefcase(void) { return m_bPlayerInZoneBriefcase; }
+	bool					IsPlayerInZoneRescue(void) { return m_bPlayerInZoneRescue; }
+	bool					PlayerHasNVGs(void) { return m_bPlayerHasNVGs; }
+	float					GetDefuseProgress(void) { return m_flDefuseProgress; }
+
 	virtual void			SetPlayerUnderwater( bool state );
 	void					UpdateUnderwaterState( void );
 	bool					IsPlayerUnderwater( void ) { return m_bPlayerUnderwater; }
@@ -559,6 +583,19 @@ private:
 	CSmartPtr<WaterDebrisEffect>	m_pWaterEmitter;
 
 	bool							m_bPlayerUnderwater;
+
+	// zone vars
+	bool					m_bPlayerInZoneStealth;
+	bool					m_bPlayerInZoneRcBomb;
+	bool					m_bPlayerInZoneBlowtorch;
+	bool					m_bPlayerInZoneFiberopticCamera;
+	bool					m_bPlayerInZoneRadio;
+	bool					m_bPlayerInZoneDefuse;
+	bool					m_bPlayerInZoneDigitalCamera;
+	bool					m_bPlayerInZoneBriefcase;
+	bool					m_bPlayerInZoneRescue;
+	bool					m_bPlayerHasNVGs;
+	float					m_flDefuseProgress;
 
 	friend class CPrediction;
 

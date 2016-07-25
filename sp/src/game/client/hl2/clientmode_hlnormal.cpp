@@ -26,6 +26,7 @@ ConVar fov_desired( "fov_desired", "75", FCVAR_ARCHIVE | FCVAR_USERINFO, "Sets t
 //-----------------------------------------------------------------------------
 vgui::HScheme g_hVGuiCombineScheme = 0;
 
+vgui::HScheme g_hVGuiC4Scheme = 0;
 
 // Instance the singleton and expose the interface to it.
 IClientMode *GetClientModeNormal()
@@ -87,6 +88,12 @@ void ClientModeHLNormal::Init()
 	if (!g_hVGuiCombineScheme)
 	{
 		Warning( "Couldn't load combine panel scheme!\n" );
+	}
+
+	g_hVGuiC4Scheme = vgui::scheme()->LoadSchemeFromFileEx(enginevgui->GetPanel(PANEL_CLIENTDLL), IsXbox() ? "resource/ClientScheme.res" : "resource/C4Panel.res", "C4Scheme");
+	if (!g_hVGuiC4Scheme)
+	{
+		Warning("Couldn't load C4 panel scheme!\n");
 	}
 }
 

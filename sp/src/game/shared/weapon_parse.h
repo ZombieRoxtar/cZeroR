@@ -99,6 +99,36 @@ public:
 	char					szAmmo1[MAX_WEAPON_AMMO_NAME];			// "primary" ammo type
 	char					szAmmo2[MAX_WEAPON_AMMO_NAME];			// "secondary" ammo type
 
+	// New vars from the beefier weapon scripts
+	bool						m_bFullAuto;
+	int							m_nPlayerSpeed; // "MaxPlayerSpeed" from the weapon's script
+	float						m_fRecoilAngle;
+	float						m_fRecoilAngleVariance;
+	float						m_fRecoilMagnitude;
+	float						m_fRecoilMagnitudeVariance;
+	float						m_fInaccuracyCrouch;
+	float						m_fInaccuracyStand;
+	float						m_fInaccuracyJump;
+	float						m_fInaccuracyLand;
+	float						m_fInaccuracyLadder;
+	float						m_fInaccuracyFire;
+	float						m_fInaccuracyMove;
+
+	int							m_nPlayerSpeedAlt; // "MaxPlayerSpeedAlt" from the weapon's script
+	int							m_nZoomLevels;
+	int							m_nZoomFov1, m_nZoomFov2;
+	float						m_flZoomTime0, m_flZoomTime1, m_flZoomTime2;
+	bool						m_bHideViewModelWhenZoomed;
+	char						m_szZoomInSound[MAX_WEAPON_STRING], m_szZoomOutSound[MAX_WEAPON_STRING];
+
+	float						m_fInaccuracyCrouchAlt; // Used by Zooming Weapons
+	float						m_fInaccuracyStandAlt;
+	float						m_fInaccuracyJumpAlt;
+	float						m_fInaccuracyLandAlt;
+	float						m_fInaccuracyLadderAlt;
+	float						m_fInaccuracyFireAlt;
+	float						m_fInaccuracyMoveAlt;
+
 	// Sound blocks
 	char					aShootSounds[NUM_SHOOT_SOUND_TYPES][MAX_WEAPON_STRING];	
 

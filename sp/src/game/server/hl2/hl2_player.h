@@ -141,6 +141,7 @@ public:
 
 	// Apply a battery
 	bool ApplyBattery( float powerMultiplier = 1.0 );
+	bool ApplyArmor(const bool no_armor);
 
 	// Commander Mode for controller NPCs
 	enum CommanderCommand_t
@@ -255,7 +256,7 @@ public:
 	virtual void		ExitLadder();
 	virtual surfacedata_t *GetLadderSurface( const Vector &origin );
 
-	virtual void EquipSuit( bool bPlayEffects = true );
+	virtual void EquipSuit( bool bPlayEffects = false );
 	virtual void RemoveSuit( void );
 	void  HandleAdmireGlovesAnimation( void );
 	void  StartAdmireGlovesAnimation( void );
@@ -277,6 +278,8 @@ public:
 
 	inline void EnableCappedPhysicsDamage();
 	inline void DisableCappedPhysicsDamage();
+
+	int GetWeightedSpeed(); // New function added to calculate player speed with respect to weapon weight
 
 	// HUD HINTS
 	void DisplayLadderHudHint();
