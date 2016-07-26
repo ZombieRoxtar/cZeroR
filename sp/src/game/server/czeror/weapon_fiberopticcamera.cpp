@@ -152,7 +152,7 @@ void CWeaponFiberopticCamera::PrimaryAttack( void )
 	do
 	{
 		CBaseEntity* pResult = gEntList.FindEntityByClassnameNearest(
-			"func_special_zone", GetAbsOrigin(), 8192 );
+			"trigger_special_zone", GetAbsOrigin(), 8192 );
 		m_zone = dynamic_cast < CSpecialZone* > ( pResult );
 	}while( m_zone->GetType() != 3 );
 

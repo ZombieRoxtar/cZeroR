@@ -1,6 +1,8 @@
 //===== Copyright Bit Mage's Stuff, All rights probably reserved. =====
 //
 // Purpose: Nightvision, kinda hacky
+//	Do NOT place this item in Hammer - It does not wait for MyTouch()
+//		Use a game_player_equip or other means
 //
 //=====================================================================
 #include "cbase.h"
@@ -9,10 +11,10 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-static ConVar	cl_nightvisioncolor_r("cl_nightvisioncolor_r", "0", FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
-static ConVar	cl_nightvisioncolor_g("cl_nightvisioncolor_g", "128", FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
-static ConVar	cl_nightvisioncolor_b("cl_nightvisioncolor_b", "0", FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
-static ConVar	cl_nightvisioncolor_a("cl_nightvisioncolor_a", "128", FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
+static ConVar cl_nightvisioncolor_r("cl_nightvisioncolor_r", "0", FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
+static ConVar cl_nightvisioncolor_g("cl_nightvisioncolor_g", "128", FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
+static ConVar cl_nightvisioncolor_b("cl_nightvisioncolor_b", "0", FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
+static ConVar cl_nightvisioncolor_a("cl_nightvisioncolor_a", "128", FCVAR_CLIENTDLL | FCVAR_ARCHIVE);
 
 class CNightVision : public CItem
 {
@@ -20,14 +22,16 @@ public:
 	DECLARE_CLASS(CNightVision, CItem);
 	DECLARE_SERVERCLASS()
 
+	~CNightVision();
+
 	int UpdateTransmitState() // Always send to all clients
 	{
 		return SetTransmitState(FL_EDICT_ALWAYS);
 	}
 
 	virtual void Spawn(void);
-
-	bool MyTouch(CBasePlayer *pPlayer);
+	virtual void Precache(void);
+	virtual void Activate(void);
 
 	void StartUp(void);
 	void Shutdown(void);
@@ -54,7 +58,7 @@ END_SEND_TABLE()
 CNightVision *pEquippedNVGs;
 
 //-----------------------------------------------------------------------------
-// Purpose: Get color values and spawn
+// Purpose: Get color values, spawn, precache, activate
 //-----------------------------------------------------------------------------
 void CNightVision::Spawn(void)
 {
@@ -62,29 +66,53 @@ void CNightVision::Spawn(void)
 	m_nTint_g = cl_nightvisioncolor_g.GetInt();
 	m_nTint_b = cl_nightvisioncolor_b.GetInt();
 	m_nTint_a = cl_nightvisioncolor_a.GetInt();
-
+	Precache();
 	BaseClass::Spawn();
+	Activate();
 }
 
-bool CNightVision::MyTouch(CBasePlayer *pPlayer)
+CNightVision::~CNightVision()
 {
+	if (m_bActive)
+		Shutdown();
+	if(pEquippedNVGs == this)
+		pEquippedNVGs = nullptr;
+}
+
+void CNightVision::Precache()
+{
+	BaseClass::Precache();
+	PrecacheScriptSound("Player.NightVisionEquip");
+	PrecacheScriptSound("Player.NightVisionOn");
+	PrecacheScriptSound("Player.NightVisionOff");
+}
+
+void CNightVision::Activate()
+{
+	BaseClass::Activate();
+	CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
 	if (pPlayer)
 	{
-		if (!pPlayer->PlayerHasNVGs())
+		EHANDLE activeNVGs = pPlayer->PlayerHasNVGs();
+		if (!activeNVGs)
 		{
 			pEquippedNVGs = this;
 			m_bEquipped.Set(true);
-			pPlayer->SetPlayerHasNVGs(true);
+			EHANDLE myHandle = this;
+			pPlayer->SetPlayerNVGs(myHandle);
 
 			CPASAttenuationFilter filter(pPlayer, "Player.NightVisionEquip");
 			EmitSound(filter, pPlayer->entindex(), "Player.NightVisionEquip");
 		}
 		else
-		{
-			return true; // This destroys the goggles... I think...
-		}
+			if (activeNVGs != this)
+				Remove();
 	}
-	return false; // Do not destroy the goggles. Nigntvision lives in them...
+	else
+	{
+		DevWarning("Nightvision couldn't find the player!\n");
+		Remove();
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -155,7 +183,8 @@ void CNightVision::StartUp(void)
 	clrFade.a = cl_nightvisioncolor_a.GetInt();
 
 	UTIL_ScreenFade(pPlayer, clrFade, 0, -1, FFADE_OUT | FFADE_PURGE | FFADE_STAYOUT);
-
+	CPASAttenuationFilter filter(pPlayer, "Player.NightVisionOn");
+	EmitSound(filter, pPlayer->entindex(), "Player.NightVisionOn");
 	m_bActive.Set(true);
 }
 void CNightVision::Shutdown(void)
@@ -167,7 +196,8 @@ void CNightVision::Shutdown(void)
 	clrFade.g = cl_nightvisioncolor_g.GetInt();
 	clrFade.b = cl_nightvisioncolor_b.GetInt();
 	clrFade.a = cl_nightvisioncolor_a.GetInt();
-
+	CPASAttenuationFilter filter(pPlayer, "Player.NightVisionOff");
+	EmitSound(filter, pPlayer->entindex(), "Player.NightVisionOff");
 	UTIL_ScreenFade(pPlayer, clrFade, 0, 0, FFADE_IN | FFADE_PURGE);
 	m_bActive.Set(false);
 }

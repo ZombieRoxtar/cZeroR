@@ -2115,12 +2115,10 @@ void CBasePlayer::SetPlayerInZoneRescue(bool state)
 		m_bPlayerInZoneRescue = state;
 	}
 }
-void CBasePlayer::SetPlayerHasNVGs(bool state)
+void CBasePlayer::SetPlayerNVGs(EHANDLE goggles)
 {
-	if (m_bPlayerHasNVGs != state)
-	{
-		m_bPlayerHasNVGs = state;
-	}
+	if (m_hNightvision.Get() != goggles)
+		m_hNightvision = goggles;
 }
 
 void CBasePlayer::SetDefuseProgress(float progress)

@@ -130,7 +130,7 @@ public:
 	virtual void			SetPlayerInZoneDigitalCamera(bool state);
 	virtual void			SetPlayerInZoneBriefcase(bool state);
 	virtual void			SetPlayerInZoneRescue(bool state);
-	virtual void			SetPlayerHasNVGs(bool state);
+	virtual void			SetPlayerNVGs(EHANDLE goggles);
 	bool					IsPlayerInZoneStealth(void) { return m_bPlayerInZoneStealth; }
 	bool					IsPlayerInZoneRcBomb(void) { return m_bPlayerInZoneRcBomb; }
 	bool					IsPlayerInZoneBlowtorch(void) { return m_bPlayerInZoneBlowtorch; }
@@ -140,8 +140,8 @@ public:
 	bool					IsPlayerInZoneDigitalCamera(void) { return m_bPlayerInZoneDigitalCamera; }
 	bool					IsPlayerInZoneBriefcase(void) { return m_bPlayerInZoneBriefcase; }
 	bool					IsPlayerInZoneRescue(void) { return m_bPlayerInZoneRescue; }
-	bool					PlayerHasNVGs(void) { return m_bPlayerHasNVGs; }
 	float					GetDefuseProgress(void) { return m_flDefuseProgress; }
+	EHANDLE					PlayerHasNVGs(void) { return m_hNightvision; }
 
 	virtual void			SetPlayerUnderwater( bool state );
 	void					UpdateUnderwaterState( void );
@@ -594,8 +594,8 @@ private:
 	bool					m_bPlayerInZoneDigitalCamera;
 	bool					m_bPlayerInZoneBriefcase;
 	bool					m_bPlayerInZoneRescue;
-	bool					m_bPlayerHasNVGs;
 	float					m_flDefuseProgress;
+	EHANDLE					m_hNightvision;
 
 	friend class CPrediction;
 

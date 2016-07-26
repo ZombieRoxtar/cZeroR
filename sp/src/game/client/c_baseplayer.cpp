@@ -255,8 +255,8 @@ END_RECV_TABLE()
 		RecvPropBool(RECVINFO(m_bPlayerInZoneDigitalCamera)),
 		RecvPropBool(RECVINFO(m_bPlayerInZoneBriefcase)),
 		RecvPropBool(RECVINFO(m_bPlayerInZoneRescue)),
-		RecvPropBool(RECVINFO(m_bPlayerHasNVGs)),
 		RecvPropFloat(RECVINFO(m_flDefuseProgress)),
+		RecvPropEHandle(RECVINFO(m_hNightvision)),
 
 	END_RECV_TABLE()
 

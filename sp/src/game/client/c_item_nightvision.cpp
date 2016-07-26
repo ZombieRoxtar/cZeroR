@@ -23,12 +23,13 @@ public:
 
 	~C_NightVision();
 
+	virtual void Spawn(void);
 	virtual void Precache(void);
 
 	virtual void PostDataUpdate(DataUpdateType_t updateType); // This is called after we receive and process a network data packet
 
-	void StartTest(void);
-	void StopTest(void);
+	void Start(void);
+	void Stop(void);
 
 private:
 	bool m_bOverlayOn;
@@ -45,7 +46,12 @@ END_RECV_TABLE()
 
 C_NightVision::~C_NightVision()
 {
-	cvar->FindVar("mat_fullbright")->SetValue(0);
+	Stop();
+}
+
+void C_NightVision::Spawn(void)
+{
+	Precache();
 }
 
 void C_NightVision::Precache(void)
@@ -54,27 +60,17 @@ void C_NightVision::Precache(void)
 	BaseClass::Precache();
 }
 
-void C_NightVision::StartTest(void)
+void C_NightVision::Start(void)
 {
 	m_bOverlayOn = true;
-	C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();
-	const Vector *vOrigin = &pPlayer->GetAbsOrigin();
-	CLocalPlayerFilter filter;
-
 	IMaterial *pMaterial = materials->FindMaterial(NIGHTVISION_OVERLAY, TEXTURE_GROUP_CLIENT_EFFECTS, true);
-	pPlayer->EmitSound(filter, 0, "Player.NightVisionOn", vOrigin);
 	view->SetScreenOverlayMaterial(pMaterial); // Overlay the screen
 	cvar->FindVar("mat_fullbright")->SetValue(1); // Activate the "light"
 }
-void C_NightVision::StopTest(void)
+void C_NightVision::Stop(void)
 {
 	m_bOverlayOn = false;
-	C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();
-	const Vector *vOrigin = &pPlayer->GetAbsOrigin();
-	CLocalPlayerFilter filter;
-
 	cvar->FindVar("mat_fullbright")->SetValue(0);
-	pPlayer->EmitSound(filter, 0, "Player.NightVisionOff", vOrigin);
 	view->SetScreenOverlayMaterial(null);
 }
 
@@ -83,14 +79,8 @@ void C_NightVision::PostDataUpdate(DataUpdateType_t updateType)
 	BaseClass::PostDataUpdate(updateType);
 
 	if (m_bActive.Get() != m_bOverlayOn)
-	{
 		if (m_bActive.Get())
-		{
-			StartTest();
-		}
+			Start();
 		else
-		{
-			StopTest();
-		}
-	}
+			Stop();
 }

@@ -534,7 +534,7 @@ public:
 	virtual void			SetPlayerInZoneDigitalCamera(bool state);
 	virtual void			SetPlayerInZoneBriefcase(bool state);
 	virtual void			SetPlayerInZoneRescue(bool state);
-	virtual void			SetPlayerHasNVGs(bool state);
+	virtual void			SetPlayerNVGs(EHANDLE goggles);
 	bool					IsPlayerInZoneStealth(void) { return m_bPlayerInZoneStealth; }
 	bool					IsPlayerInZoneRcBomb(void) { return m_bPlayerInZoneRcBomb; }
 	bool					IsPlayerInZoneBlowtorch(void) { return m_bPlayerInZoneBlowtorch; }
@@ -544,7 +544,7 @@ public:
 	bool					IsPlayerInZoneDigitalCamera(void) { return m_bPlayerInZoneDigitalCamera; }
 	bool					IsPlayerInZoneBriefcase(void) { return m_bPlayerInZoneBriefcase; }
 	bool					IsPlayerInZoneRescue(void) { return m_bPlayerInZoneRescue; }
-	bool					PlayerHasNVGs(void) { return m_bPlayerHasNVGs; }
+	EHANDLE					PlayerHasNVGs(void) { return m_hNightvision; }
 
 	void					WaterMove( void );
 	float					GetWaterJumpTime() const;
@@ -718,6 +718,9 @@ public:
 	void	SetConnected( PlayerConnectedState iConnected ) { m_iConnected = iConnected; }
 	virtual void EquipSuit( bool bPlayEffects = false );
 	virtual void RemoveSuit( void );
+
+	virtual void RemoveNVGs( void );
+
 	void	SetMaxSpeed( float flMaxSpeed ) { m_flMaxspeed = flMaxSpeed; }
 
 	void	NotifyNearbyRadiationSource( float flRange );
@@ -1179,8 +1182,8 @@ protected:
 	CNetworkVar(bool, m_bPlayerInZoneDigitalCamera);
 	CNetworkVar(bool, m_bPlayerInZoneBriefcase);
 	CNetworkVar(bool, m_bPlayerInZoneRescue);
-	CNetworkVar(bool, m_bPlayerHasNVGs);
 	CNetworkVar(float, m_flDefuseProgress);
+	CNetworkVar(EHANDLE, m_hNightvision);
 
 	// These are generated while running usercmds, then given to UpdateVPhysicsPosition after running all queued commands.
 	Vector m_vNewVPhysicsPosition;

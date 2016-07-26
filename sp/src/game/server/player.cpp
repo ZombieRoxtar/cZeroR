@@ -7649,6 +7649,7 @@ class CStripWeapons : public CPointEntity
 public:
 	void InputStripWeapons(inputdata_t &data);
 	void InputStripWeaponsAndSuit(inputdata_t &data);
+	void InputStripNightVision(inputdata_t &data);
 
 	void StripWeapons(inputdata_t &data, bool stripSuit);
 	DECLARE_DATADESC();
@@ -7659,6 +7660,7 @@ LINK_ENTITY_TO_CLASS( player_weaponstrip, CStripWeapons );
 BEGIN_DATADESC( CStripWeapons )
 	DEFINE_INPUTFUNC( FIELD_VOID, "Strip", InputStripWeapons ),
 	DEFINE_INPUTFUNC( FIELD_VOID, "StripWeaponsAndSuit", InputStripWeaponsAndSuit ),
+	DEFINE_INPUTFUNC( FIELD_VOID, "StripNightvision", InputStripNightVision ),
 END_DATADESC()
 	
 
@@ -7688,6 +7690,25 @@ void CStripWeapons::StripWeapons(inputdata_t &data, bool stripSuit)
 	if ( pPlayer )
 	{
 		pPlayer->RemoveAllItems( stripSuit );
+	}
+}
+
+void CStripWeapons::InputStripNightVision(inputdata_t &data)
+{
+	CBasePlayer *pPlayer = NULL;
+
+	if (data.pActivator && data.pActivator->IsPlayer())
+	{
+		pPlayer = (CBasePlayer *)data.pActivator;
+	}
+	else if (!g_pGameRules->IsDeathmatch())
+	{
+		pPlayer = UTIL_GetLocalPlayer();
+	}
+
+	if (pPlayer)
+	{
+		pPlayer->RemoveNVGs();
 	}
 }
 
@@ -8052,8 +8073,8 @@ void SendProxy_CropFlagsToPlayerFlagBitsLength( const SendProp *pProp, const voi
 		SendPropBool(SENDINFO(m_bPlayerInZoneDigitalCamera)),
 		SendPropBool(SENDINFO(m_bPlayerInZoneBriefcase)),
 		SendPropBool(SENDINFO(m_bPlayerInZoneRescue)),
-		SendPropBool(SENDINFO(m_bPlayerHasNVGs)),
 		SendPropFloat(SENDINFO(m_flDefuseProgress), 0, SPROP_NOSCALE),
+		SendPropEHandle(SENDINFO(m_hNightvision)),
 
 	END_SEND_TABLE()
 
@@ -8709,6 +8730,15 @@ void CBasePlayer::EquipSuit( bool bPlayEffects )
 void CBasePlayer::RemoveSuit( void )
 {
 	m_Local.m_bWearingSuit = false;
+}
+
+void CBasePlayer::RemoveNVGs( void )
+{
+	if (PlayerHasNVGs())
+	{
+		PlayerHasNVGs().Get()->Remove();
+		SetPlayerNVGs(nullptr);
+	}
 }
 
 //-----------------------------------------------------------------------------
