@@ -119,7 +119,10 @@ void CHudFlashlight::Paint()
 	// Only paint when we have a gun with a flashlight or it's in use by cheaters
 	SetPaintBackgroundEnabled(true); // We need to turn the background on now (or it'll be gone later) Why? BUGBUG?
 	bool bIsOn = pPlayer->IsEffectActive( EF_DIMLIGHT );
-	if (!(bIsOn || pPlayer->m_HL2Local.m_flFlashBattery < 100.0f || FClassnameIs(pPlayer->GetActiveWeapon(), "weapon_mp7") || FClassnameIs(pPlayer->GetActiveWeapon(), "weapon_nova")))
+	bool bHasFlWeapon = false;
+	if (pPlayer->GetActiveWeapon())
+		bHasFlWeapon = FClassnameIs(pPlayer->GetActiveWeapon(), "weapon_mp7") || FClassnameIs(pPlayer->GetActiveWeapon(), "weapon_nova");
+	if (!(bIsOn || pPlayer->m_HL2Local.m_flFlashBattery < 100.0f || bHasFlWeapon))
 	{
 		SetPaintBackgroundEnabled(false);
 		return;

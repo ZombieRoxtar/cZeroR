@@ -82,10 +82,9 @@ void CHudZoneIndicator::OnThink()
 		return;
 
 	C_BaseCombatWeapon *wpn = GetActiveWeapon();
-	if (!wpn)
-		return;
 
-	if (wpn != m_hCurrentActiveWeapon)
+
+	if (wpn && (wpn != m_hCurrentActiveWeapon))
 	{
 		m_bRightTool[1] = false; // RC Bombs
 		m_bRightTool[2] = false; // Blowtorch
@@ -94,28 +93,27 @@ void CHudZoneIndicator::OnThink()
 		m_bRightTool[6] = false; // Camera
 		m_bRightTool[7] = false; // Briefcase
 
-			 // strcmp() returns 0 when neither string is greater? (based off a cpu instruction)
-		if (!strcmp(wpn->GetName(), "weapon_rcbomb"))
+		if (FClassnameIs(wpn, "weapon_rcbomb"))
 		{
 			m_bRightTool[1] = true;
 		}
-		if (!strcmp(wpn->GetName(), "weapon_blowtorch"))
+		if (FClassnameIs(wpn, "weapon_blowtorch"))
 		{
 			m_bRightTool[2] = true;
 		}
-		if (!strcmp(wpn->GetName(), "weapon_fiberopticcamera"))
+		if (FClassnameIs(wpn, "weapon_fiberopticcamera"))
 		{
 			m_bRightTool[3] = true;
 		}
-		if (!strcmp(wpn->GetName(), "weapon_radio"))
+		if (FClassnameIs(wpn, "weapon_radio"))
 		{
 			m_bRightTool[4] = true;
 		}
-		if (!strcmp(wpn->GetName(), "weapon_camera"))
+		if (FClassnameIs(wpn, "weapon_camera"))
 		{
 			m_bRightTool[5] = true;
 		}
-		if (!strcmp(wpn->GetName(), "weapon_briefcase"))
+		if (FClassnameIs(wpn, "weapon_briefcase"))
 		{
 			m_bRightTool[7] = true;
 		}
