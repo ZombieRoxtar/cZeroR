@@ -111,9 +111,9 @@ ConVar	sk_plr_dmg_338Mag		( "sk_plr_dmg_338Mag", "40", FCVAR_REPLICATED);
 ConVar	sk_npc_dmg_338Mag		( "sk_npc_dmg_338Mag", "20", FCVAR_REPLICATED);
 ConVar	sk_max_338Mag			( "sk_max_338Mag", "30", FCVAR_REPLICATED);
 
-ConVar	sk_plr_dmg_357Sig		( "sk_plr_dmg_338Mag", "5", FCVAR_REPLICATED);
-ConVar	sk_npc_dmg_357Sig		( "sk_npc_dmg_338Mag", "3", FCVAR_REPLICATED);
-ConVar	sk_max_357Sig			( "sk_max_338Mag", "52", FCVAR_REPLICATED);
+ConVar	sk_plr_dmg_357Sig		( "sk_plr_dmg_357Sig", "5", FCVAR_REPLICATED);
+ConVar	sk_npc_dmg_357Sig		( "sk_npc_dmg_357Sig", "3", FCVAR_REPLICATED);
+ConVar	sk_max_357Sig			( "sk_max_357Sig", "52", FCVAR_REPLICATED);
 
 ConVar	sk_plr_dmg_45ACP		( "sk_plr_dmg_45ACP", "8", FCVAR_REPLICATED);
 ConVar	sk_npc_dmg_45ACP		( "sk_npc_dmg_45ACP", "3", FCVAR_REPLICATED);

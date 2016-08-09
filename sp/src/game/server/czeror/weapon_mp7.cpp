@@ -15,7 +15,7 @@
 class CWeaponMp7 : public CBaseAdvancedWeapon
 {
 	public:
-		CWeaponMp7() { m_bHasLight = false; }
+		CWeaponMp7() { m_bHasLight = true; }
 		DECLARE_CLASS( CWeaponMp7, CBaseAdvancedWeapon);
 		DECLARE_NETWORKCLASS();
 		DECLARE_PREDICTABLE();
