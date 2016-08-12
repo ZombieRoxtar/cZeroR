@@ -34,7 +34,6 @@ class CSpecialZone;
 //-------------------------------------
 // Models - These will be replaced with races
 //-------------------------------------
-
 enum HostageType_t
 {
 	CT_DEFAULT,

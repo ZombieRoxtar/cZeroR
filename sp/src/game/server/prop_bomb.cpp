@@ -15,17 +15,17 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-#define SF_BOMB_START_ON			 0x00000001
+#define SF_BOMB_START_ON			 0x00000001 // This very dangerous bomb starts right away
 #define SF_BOMB_SHOULD_EXPLODE		 0x00000002 // Explode for real, most just fire the output
 #define SF_BOMB_GLOW_AFTER_EXPLOSION 0x00000003 // Glow RED atfer the bomb is "done"
-#define SF_BOMB_GLOW_OVERRIDE		 0x00000004
+#define SF_BOMB_GLOW_OVERRIDE		 0x00000004 // Allow bomb's red glow to override any other
 
-#define BOMB_ZONE_TYPE 5
+#define BOMB_ZONE_TYPE ZONE_DEFUSE
 
 #define BOMB_FUSE_TIME 30.0f
 #define SPRITE_TOGGLE_TIME 0.5f
 #define BOMB_BEEP_TIME 2.0f
-#define BOMB_THINK_TIME 0.125f
+#define BOMB_THINK_TIME 0.125f // 1/8th of a second. Use this with SetNextThink
 
 #define BOMB_GLOW_COLOR 255, 0, 0, 160
 
@@ -61,7 +61,9 @@ void CPropBomb::Spawn()
 	m_iCaps = NULL;
 
 	m_flTickedTime = 0.0f;
-	m_flNextBeepTime, m_flNextBlinkTime, m_flNextThinkTime = gpGlobals->curtime;
+	m_flNextBeepTime =
+		m_flNextBlinkTime =
+		m_flNextThinkTime = gpGlobals->curtime;
 
 	if (HasSpawnFlags(SF_BOMB_START_ON))
 	{
@@ -118,7 +120,7 @@ void CPropBomb::Start(inputdata_t &inputData)
 			AddGlowEffect();
 		}
 
-		if (!m_bPlayerOn) // We need to leave the think func set to Off() whilst a player is +USEing this
+		if (!m_bPlayerOn)
 		{
 			SetThink(&CPropBomb::Tick);
 			SetNextThink(gpGlobals->curtime + BOMB_THINK_TIME);
@@ -180,7 +182,7 @@ void CPropBomb::Tick()
 		CSoundEnt::InsertSound(SOUND_DANGER, GetAbsOrigin(), 512, SPRITE_TOGGLE_TIME);
 	}
 
-	if (!m_bPlayerOn && m_bActive) // We need to leave the think func set to Off() whilst a player is +USEing this
+	if (!m_bPlayerOn && m_bActive)
 	{
 		SetThink(&CPropBomb::Tick);
 		SetNextThink(gpGlobals->curtime + BOMB_THINK_TIME);
@@ -288,16 +290,16 @@ void CPropBomb::Use(CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useT
 	if (!m_bActive)
 		return;
 
-	/*
-	We need to leave the think func set to Off() whilst a player is +USEing this
-	but it's okay, this is func is spammed during that time.
-	*/
 	Tick();
 
-	// If it's not a player, ignore
 	if (!pActivator || !pActivator->IsPlayer())
 		return;
 
+	/*
+		We need to set the think func to Off() whilst a player is +USEing this
+		but it's okay, this (use) func is spammed during that time.
+		Seems that the think (Off()) will actually not run until the player to lets go.
+	*/
 	SetThink(&CPropBomb::Off);
 	SetNextThink(gpGlobals->curtime + BOMB_THINK_TIME);
 

@@ -12,9 +12,37 @@
 
 #include "triggers.h"
 
+// How long to hold an error on the HUD (e.g. You are not in a radio zone.)
+#define HUD_ERROR_TIMEOUT 5.0f
+
 class CEnvScreenOverlay;
 class CPropBomb;
 class CNPC_Hostage;
+
+/*
+Type of zone:
+0 = Stealth
+1 = RC Bomb
+2 = Blowtorch
+3 = Fiberoptic Camera
+4 = Radio
+5 = (Bomb) Defuse
+6 = (Digital) Camera
+7 = Briefcase
+8 = (Hostage) Rescue
+*/
+enum zoneType
+{
+	ZONE_STEALTH, // Stealth Zone
+	ZONE_RC_BOMB, // Radio-Controlled Bomb Zone
+	ZONE_BLOWTORCH, // Blowtorch Zone
+	ZONE_FO_CAMERA, // Fiberoptic Camera Zone
+	ZONE_RADIO, // Radio Zone
+	ZONE_DEFUSE, // Bomb Defusal Zone
+	ZONE_CAMERA, // Digital Camera Zone
+	ZONE_BRF_CASE, // Briefcase Zone
+	ZONE_RESCUE // Hostage Rescue Zone
+};
 
 //=============================================================================
 class CSpecialZone : public CBaseTrigger
@@ -23,13 +51,12 @@ public:
 	DECLARE_CLASS(CSpecialZone, CBaseTrigger);
 	DECLARE_DATADESC();
 
-	// Constructor
 	CSpecialZone();
 	void Spawn();
 	void Activate();
 	virtual void InputDisable(inputdata_t &inputdata); // Overridden to force hudtext off when disabled
 	void Disable(void);
-	int  GetType() { return m_nType; };
+	zoneType GetType() { return m_nType; };
 	void Touch(CBaseEntity *pOther);
 	void StartTouch(CBaseEntity *pOther);
 	void EndTouch(CBaseEntity *pOther);
@@ -41,31 +68,8 @@ public:
 	void Think();
 	bool Looking();
 
+
 private:
-	/*
-	Type of zone:
-	0 = Stealth
-	1 = RC Bomb
-	2 = Blowtorch
-	3 = Fiberoptic Camera
-	4 = Radio
-	5 = (Bomb) Defuse
-	6 = (Digital) Camera
-	7 = Briefcase
-	8 = (Hostage) Rescue
-	*/
-	enum zoneType
-	{
-		ZONE_STEALTH, // Stealth Zone
-		ZONE_RC_BOMB, // Radio-Controlled Bomb Zone
-		ZONE_BLOWTORCH, // Blowtorch Zone
-		ZONE_FO_CAMERA, // Fiberoptic Camera Zone
-		ZONE_RADIO, // Radio Zone
-		ZONE_DEFUSE, // Bomb Defusal Zone
-		ZONE_CAMERA, // Digital Camera Zone
-		ZONE_BRF_CASE, // Briefcase Zone
-		ZONE_RESCUE // Hostage Rescue Zone
-	};
 
 	COutputEvent OnSuccess; /* weapon fired, bomb defused, Hostage rescued, ... */
 	COutputEvent OnAborted; /* Player quit too soon */

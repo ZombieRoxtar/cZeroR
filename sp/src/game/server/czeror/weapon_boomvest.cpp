@@ -78,10 +78,10 @@ void CWeaponBoomVest::Boom( void )
 	// Make sure that the user dies a horrible, gruesome death
 	if( GetOwner()->IsAlive())
 	{
-		//How? That dosen't work... ---v
+		//How? This dosen't work.
 		//CTakeDamageInfo info( this, this, 200, DMG_BLAST );
 	}
 	ExplosionCreate( GetOwner()->GetLocalOrigin(), GetAbsAngles(), this, 1024, m_fMaxRange1, true );
 	//AddEFlags(EFL_KILLME);
-	Warning("It's %f.\n",m_flDamage);
+	Warning("Boomvest went boom for %f damage.\n",m_flDamage);
 }

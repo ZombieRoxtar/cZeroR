@@ -10,7 +10,6 @@
 #include "te_effect_dispatch.h"
 #include "triggers.h"
 #include "smoke_trail.h"
-#include "hl2_shareddefs.h"
 #include "rumble_shared.h"
 #include "gamestats.h"
 // memdbgon must be the last include file in a .cpp file!!!
@@ -97,9 +96,6 @@ unsigned int CRocket::PhysicsSolidMaskForEntity( void ) const
 //---------------------------------------------------------
 int CRocket::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 {
-	if ( ( info.GetDamageType() & (DMG_MISSILEDEFENSE | DMG_AIRBOAT) ) == false )
-		return 0;
-
 	bool bIsDamaged;
 	if( m_iHealth <= AugerHealth() )
 	{

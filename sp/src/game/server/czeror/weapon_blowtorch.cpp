@@ -9,13 +9,13 @@
 #include "basehlcombatweapon.h"
 #include "AI_BaseNPC.h"
 #include "gamestats.h"
+#include "in_buttons.h"
 #include "trigger_special_zone.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
 #define BLOWTORCH_HUD_ERROR "NotInBlowtorchZone"
-#define BLOWTORCH_DISPLAY_COOLDOWN 5.0f
 
 //-----------------------------------------------------------------------------
 // CWeaponBlowtorch
@@ -34,10 +34,9 @@ public:
 
 	void	PrimaryAttack( void );
 	void	Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatCharacter *pOperator );
-
+	void	ItemPreFrame( void );
 
 	int			CapabilitiesGet( void ) { return bits_CAP_WEAPON_RANGE_ATTACK1; }
-	Activity	GetPrimaryAttackActivity( void ) { return ACT_VM_PRIMARYATTACK; }
 
 	virtual bool UsesClipsForAmmo1() { return false; }
 
@@ -51,14 +50,12 @@ public:
 	{
 		return 0.025f; 
 	}
-
-	DECLARE_ACTTABLE();
-
+	
 private:
 	float m_flLastAttackTime;
-
 	float m_flNextDisplayTime;
-	float m_flDisplayCooldown;
+
+	bool m_bSpamming;
 
 	CSpecialZone* m_zone;
 };
@@ -75,26 +72,6 @@ BEGIN_DATADESC( CWeaponBlowtorch )
 
 END_DATADESC()
 
-acttable_t CWeaponBlowtorch::m_acttable[] = 
-{
-	{ ACT_IDLE,						ACT_IDLE_PISTOL,				true },
-	{ ACT_IDLE_ANGRY,				ACT_IDLE_ANGRY_PISTOL,			true },
-	{ ACT_RANGE_ATTACK1,			ACT_RANGE_ATTACK_PISTOL,		true },
-	{ ACT_RELOAD,					ACT_RELOAD_PISTOL,				true },
-	{ ACT_WALK_AIM,					ACT_WALK_AIM_PISTOL,			true },
-	{ ACT_RUN_AIM,					ACT_RUN_AIM_PISTOL,				true },
-	{ ACT_GESTURE_RANGE_ATTACK1,	ACT_GESTURE_RANGE_ATTACK_PISTOL,true },
-	{ ACT_RELOAD_LOW,				ACT_RELOAD_PISTOL_LOW,			false },
-	{ ACT_RANGE_ATTACK1_LOW,		ACT_RANGE_ATTACK_PISTOL_LOW,	false },
-	{ ACT_COVER_LOW,				ACT_COVER_PISTOL_LOW,			false },
-	{ ACT_RANGE_AIM_LOW,			ACT_RANGE_AIM_PISTOL_LOW,		false },
-	{ ACT_GESTURE_RELOAD,			ACT_GESTURE_RELOAD_PISTOL,		false },
-	{ ACT_WALK,						ACT_WALK_PISTOL,				false },
-	{ ACT_RUN,						ACT_RUN_PISTOL,					false },
-};
-
-IMPLEMENT_ACTTABLE( CWeaponBlowtorch );
-
 //-----------------------------------------------------------------------------
 // Purpose: Constructor
 //-----------------------------------------------------------------------------
@@ -104,6 +81,8 @@ CWeaponBlowtorch::CWeaponBlowtorch( void )
 
 	m_fMinRange1 = 0;
 	m_fMaxRange1 = 128;
+
+	m_bSpamming = false;
 }
 
 //-----------------------------------------------------------------------------
@@ -150,7 +129,7 @@ void CWeaponBlowtorch::PrimaryAttack( void )
 	{
 		if ( m_flNextDisplayTime < gpGlobals->curtime )
 		{
-			m_flNextDisplayTime = gpGlobals->curtime + BLOWTORCH_DISPLAY_COOLDOWN;
+			m_flNextDisplayTime = gpGlobals->curtime + HUD_ERROR_TIMEOUT;
 			UTIL_ShowMessage( BLOWTORCH_HUD_ERROR, pPlayer );
 		}
 		return;
@@ -191,9 +170,29 @@ void CWeaponBlowtorch::PrimaryAttack( void )
 		CBaseEntity* pResult = gEntList.FindEntityByClassnameNearest(
 			"trigger_special_zone", GetAbsOrigin(), 8192 );
 		m_zone = dynamic_cast < CSpecialZone* > ( pResult );
-	}while( m_zone->GetType() != 2 );
+	}while( m_zone->GetType() != ZONE_BLOWTORCH );
 
-	/* I figure there's no way to not spam these, the outputs can be set to only fire once */
-	m_zone->StartUsing( pPlayer );
-	m_zone->StopUsing ( pPlayer );
+	// Once per mouse click is fine!
+	if (!m_bSpamming)
+	{
+		m_bSpamming = true;
+		m_zone->StartUsing(pPlayer);
+		m_zone->StopUsing(pPlayer);
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Reset a varible that stops outputs from spamming when the player lets go
+//-----------------------------------------------------------------------------
+void CWeaponBlowtorch::ItemPreFrame(void)
+{
+	BaseClass::ItemPreFrame();
+
+	if (CBasePlayer *pPlayer = ToBasePlayer(GetOwner()))
+	{
+		if (!(pPlayer->m_nButtons & IN_ATTACK))
+		{
+			m_bSpamming = false;
+		}
+	}
 }

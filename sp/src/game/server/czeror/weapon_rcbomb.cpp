@@ -11,8 +11,6 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-#define	RC_BOMB_REPLANT_TIME 0.5f
-#define	RCBOMB_HUD_TIMEOUT	 5.0f
 #define RCBOMB_HUD_ERROR	 "NotInRcBombZone"
 
 //-----------------------------------------------------------------------------
@@ -32,18 +30,11 @@ public:
 
 	void PrimaryAttack( void );
 	void SecondaryAttack( void );
+	void WeaponIdle( void );
+	bool Deploy( void );
 
 	bool Plant( void );
 	bool Detonate( void );
-
-	Activity GetPrimaryAttackActivity( void ) { return ACT_VM_PRIMARYATTACK; }
-
-	virtual float GetFireRate( void ) 
-	{
-		return RC_BOMB_REPLANT_TIME;
-	}
-
-	DECLARE_ACTTABLE();
 
 private:
 	float m_flSoonestPrimaryAttack;
@@ -56,6 +47,8 @@ private:
 	CSpecialZone* m_zonesWithBombs[64];
 	int m_nBombsPlanted;
 	bool m_bDetonatorOn;
+	bool m_bWasInZone;
+	bool m_bInAnim;
 };
 
 IMPLEMENT_SERVERCLASS_ST( CWeaponRcBomb, DT_WeaponRcBomb )
@@ -70,36 +63,21 @@ BEGIN_DATADESC( CWeaponRcBomb )
 
 END_DATADESC()
 
-acttable_t CWeaponRcBomb::m_acttable[] = 
-{
-	{ ACT_IDLE,						ACT_IDLE_PISTOL,				true },
-	{ ACT_IDLE_ANGRY,				ACT_IDLE_ANGRY_PISTOL,			true },
-	{ ACT_RANGE_ATTACK1,			ACT_RANGE_ATTACK_PISTOL,		true },
-	{ ACT_RELOAD,					ACT_RELOAD_PISTOL,				true },
-	{ ACT_WALK_AIM,					ACT_WALK_AIM_PISTOL,			true },
-	{ ACT_RUN_AIM,					ACT_RUN_AIM_PISTOL,				true },
-	{ ACT_GESTURE_RANGE_ATTACK1,	ACT_GESTURE_RANGE_ATTACK_PISTOL,true },
-	{ ACT_RELOAD_LOW,				ACT_RELOAD_PISTOL_LOW,			false},
-	{ ACT_RANGE_ATTACK1_LOW,		ACT_RANGE_ATTACK_PISTOL_LOW,	false},
-	{ ACT_COVER_LOW,				ACT_COVER_PISTOL_LOW,			false},
-	{ ACT_RANGE_AIM_LOW,			ACT_RANGE_AIM_PISTOL_LOW,		false},
-	{ ACT_GESTURE_RELOAD,			ACT_GESTURE_RELOAD_PISTOL,		false},
-	{ ACT_WALK,						ACT_WALK_PISTOL,				false},
-	{ ACT_RUN,						ACT_RUN_PISTOL,					false},
-};
-
-IMPLEMENT_ACTTABLE( CWeaponRcBomb );
 //-----------------------------------------------------------------------------
 // Purpose: Constructor
 //-----------------------------------------------------------------------------
 CWeaponRcBomb::CWeaponRcBomb( void )
 {
-	m_flNextDisplayTime, m_flSoonestPrimaryAttack, m_flSoonestSecondaryAttack = gpGlobals->curtime;
+	m_flNextDisplayTime =
+		m_flSoonestPrimaryAttack =
+		m_flSoonestSecondaryAttack = gpGlobals->curtime;
 
 	m_nBombsPlanted = 0;
 
 	m_bFiresUnderwater = true;
-	m_bDetonatorOn = false;
+	m_bDetonatorOn = 
+		m_bWasInZone =
+		m_bInAnim = false;
 }
 
 //-----------------------------------------------------------------------------
@@ -111,30 +89,24 @@ void CWeaponRcBomb::PrimaryAttack( void )
 	bool shouldSwitch = false;
 
 	if ( !pPlayer )
-	{
 		return;
-	}
+
+	if (m_flSoonestPrimaryAttack >= gpGlobals->curtime)
+		return;
 
 	if ( m_bDetonatorOn )
-	{
-		if ( Detonate() )
-		{
-			shouldSwitch = true;
-		}
-	}
+		shouldSwitch = Detonate();
 	else
-	{
-		if ( Plant() )
-		{
-			shouldSwitch = true;
-		}
-	}
-
+		shouldSwitch = Plant();
+	
 	// Swap modes after a SUCCESSFULL plant/detonate
 	if ( shouldSwitch )
 	{
+		m_flLastAttackTime = gpGlobals->curtime;
 		SecondaryAttack();
 	}
+
+	m_flSoonestPrimaryAttack = gpGlobals->curtime + SequenceDuration();
 }
 
 //-----------------------------------------------------------------------------
@@ -154,18 +126,11 @@ bool CWeaponRcBomb::Plant( void )
 	{
 		if ( m_flNextDisplayTime < gpGlobals->curtime )
 		{
-			m_flNextDisplayTime = gpGlobals->curtime + RCBOMB_HUD_TIMEOUT;
+			m_flNextDisplayTime = gpGlobals->curtime + HUD_ERROR_TIMEOUT;
 			UTIL_ShowMessage( RCBOMB_HUD_ERROR, pPlayer );
 		}
 		return false;
 	}
-
-	if ( m_flSoonestPrimaryAttack >= gpGlobals->curtime )
-	{
-		return false;
-	}
-
-	//TODO: Wait for the anim to finish
 
 	// Set each time you fire, in case you're in a new zone
 	do
@@ -173,14 +138,17 @@ bool CWeaponRcBomb::Plant( void )
 		CBaseEntity* pResult = gEntList.FindEntityByClassnameNearest(
 			"trigger_special_zone", GetAbsOrigin(), 8192 );
 		m_zone = dynamic_cast < CSpecialZone* > ( pResult );
-	}while( m_zone->GetType() != 1 );
+	}while( m_zone->GetType() != ZONE_RC_BOMB );
 
 	m_zone->StartUsing( pPlayer );
-	
-	m_flLastAttackTime = gpGlobals->curtime;
-	m_flSoonestPrimaryAttack = gpGlobals->curtime + RC_BOMB_REPLANT_TIME;
 
-	SendWeaponAnim( GetPrimaryAttackActivity() );
+	/*
+		FIXME: This doesn't even play.
+		FIXME: The model's hands don't move away until ACT_SLAM_TRIPMINE_ATTACH2
+		FIXME: Will the mode switch play a draw anim on time?
+	*/
+	m_bInAnim = true;
+	SendWeaponAnim(ACT_SLAM_TRIPMINE_ATTACH);
 
 	m_iClip1--;
 
@@ -204,13 +172,6 @@ bool CWeaponRcBomb::Detonate( void )
 		return false;
 	}
 
-	if ( m_flSoonestPrimaryAttack >= gpGlobals->curtime )
-	{
-		return false;
-	}
-	m_flLastAttackTime = gpGlobals->curtime;
-	m_flSoonestPrimaryAttack = gpGlobals->curtime + RC_BOMB_REPLANT_TIME;
-
 	if ( m_nBombsPlanted )
 	{
 		for ( int i = 0; i <= m_nBombsPlanted; i++ )
@@ -222,12 +183,16 @@ bool CWeaponRcBomb::Detonate( void )
 			}
 		}
 		m_nBombsPlanted = 0;
-		return true;
 	}
 
-	// The player has not planted any bombs to detonate
-	//TODO: A dryfire anim?
-	return false;
+	
+	// The detonation animation plays even if no bombs were found, like a "dry fire" anim.
+	// FIXME: There is no delay, so we never see the anim
+	m_bInAnim = true;
+	SendWeaponAnim(ACT_SLAM_DETONATOR_DETONATE);
+
+	// Only switch to bombs if we have any.
+	return HasPrimaryAmmo();
 }
 
 //-----------------------------------------------------------------------------
@@ -242,26 +207,92 @@ void CWeaponRcBomb::SecondaryAttack( void )
 		return;
 	}
 
-	// We use the an attack cooldown, otherwise (as long the button is held) it'll swap modes every frame!
-	//TODO: Just wait for the anim to finish
-	if ( m_flSoonestSecondaryAttack < gpGlobals->curtime )
-	{
-		m_flSoonestSecondaryAttack = gpGlobals->curtime + RC_BOMB_REPLANT_TIME;
-	}
-	else
+	if ( m_flSoonestSecondaryAttack >= gpGlobals->curtime )
 	{
 		return;
 	}
 
-	//HACK: Remove these console messages once we have art!
+	int iAnim = 0;
 	if ( m_bDetonatorOn && HasPrimaryAmmo() )
 	{
 		m_bDetonatorOn = false;
-		Msg("You have the bombs.\n");
+		// FIXME: What about ACT_SLAM_DETONATOR_HOLSTER ?
+		iAnim = ACT_SLAM_THROW_ND_DRAW;
+		if (pPlayer->IsPlayerInZoneRcBomb())
+		{
+			iAnim = ACT_SLAM_TRIPMINE_DRAW;
+			m_bWasInZone = true;
+		}
 	}
 	else
 	{
 		m_bDetonatorOn = true;
-		Msg("You have the detonator.\n");
+		// There are no ACT_SLAM_*_ND_HOLSTER anims? Can we FIXME?
+		iAnim = ACT_SLAM_DETONATOR_DRAW;
 	}
+	m_bInAnim = true;
+	SendWeaponAnim(iAnim);
+
+	m_flSoonestSecondaryAttack = gpGlobals->curtime + SequenceDuration();
+}
+
+void CWeaponRcBomb::WeaponIdle(void)
+{
+	CBasePlayer *pPlayer = ToBasePlayer(GetOwner());
+	if (!pPlayer)
+	{
+		return;
+	}
+
+	if ((m_bInAnim) && IsSequenceFinished())
+	{
+		// FIXME: Trying to get "slam" to switch to "tripmine" as visual feedback for being in the zone
+		int iAnim = 0;
+		if (m_bDetonatorOn)
+		{
+			iAnim = ACT_SLAM_DETONATOR_IDLE;
+			m_bInAnim = false;
+		}
+		else
+			if (pPlayer->IsPlayerInZoneRcBomb())
+			{
+				iAnim = ACT_SLAM_TRIPMINE_IDLE;
+				m_bInAnim = false;
+				if (!m_bWasInZone)
+				{
+					iAnim = ACT_SLAM_TRIPMINE_TO_THROW_ND;
+					m_bInAnim = true;
+				}
+				m_bWasInZone = true;
+			}
+			else
+			{
+				iAnim = ACT_SLAM_THROW_ND_IDLE;
+				m_bInAnim = false;
+				if (m_bWasInZone)
+				{
+					iAnim = ACT_SLAM_TRIPMINE_TO_THROW_ND;
+					m_bInAnim = true;
+				}
+				m_bWasInZone = false;
+			}
+		SendWeaponAnim(iAnim);
+	}
+}
+
+bool CWeaponRcBomb::Deploy(void)
+{
+	CBaseCombatCharacter *pOwner = GetOwner();
+	if (!pOwner)
+	{
+		return false;
+	}
+
+	m_bWasInZone = false;
+	// Let the idle func switch it if it's in a bomb zone.
+	int iAnim = m_bDetonatorOn ? ACT_SLAM_DETONATOR_DRAW : ACT_SLAM_THROW_ND_DRAW;
+	m_bInAnim = true;
+	SendWeaponAnim(iAnim);
+
+	return DefaultDeploy((char*)GetViewModel(), (char*)GetWorldModel(), iAnim, (char*)GetAnimPrefix());
 }

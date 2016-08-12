@@ -89,6 +89,10 @@ static const char *g_ppszRandomHeads[] =
 	"male_09.mdl",
 };
 
+/*
+	TODO: These will be races
+		-- Keep consistent with type enum in .h file!
+*/
 static const char *g_ppszModelLocs[] =
 {
 	"Group01",
@@ -303,6 +307,7 @@ void CNPC_Hostage::SelectModel()
 			HostageType_t type;
 		};
 
+		// TODO: When CZ types are added, fix this mapping
 		static CitizenTypeMapping CitizenTypeMappings[] =
 		{
 			{ "trainstation",	CT_DOWNTRODDEN },
