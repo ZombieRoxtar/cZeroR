@@ -3308,7 +3308,7 @@ void C_BaseEntity::OnDataChanged( DataUpdateType_t type )
 		UpdateGlowEffect();
 	}
 	// Need to make sure the color is right (to avoid having to "reboot" the glow)
-	SetGlowEffectColor(m_fGlowRed.Get(), m_fGlowGreen.Get(), m_fGlowBlue.Get());
+	CheckGlowEffect();
 #endif // GLOWS_ENABLE
 }
 
@@ -6513,7 +6513,7 @@ void C_BaseEntity::UpdateGlowEffect(void)
 }
 
 //-----------------------------------------------------------------------------
-// Purpose: Deletes the glow effects pointer
+// Purpose: Deletes the glow effect's pointer
 //-----------------------------------------------------------------------------
 void C_BaseEntity::DestroyGlowEffect(void)
 {
@@ -6522,6 +6522,19 @@ void C_BaseEntity::DestroyGlowEffect(void)
 		delete m_pGlowEffect;
 		m_pGlowEffect = NULL;
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Rechecks glow's state
+//-----------------------------------------------------------------------------
+void C_BaseEntity::CheckGlowEffect(void)
+{
+	if (m_bGlowEnabled && m_pGlowEffect &&
+		(m_pGlowEffect->GetColor().x != m_fGlowRed.Get()) ||
+		(m_pGlowEffect->GetColor().y != m_fGlowGreen.Get()) ||
+		(m_pGlowEffect->GetColor().z != m_fGlowBlue.Get()) ||
+		(m_pGlowEffect->GetAlpha() != m_fGlowAlpha.Get()))
+		UpdateGlowEffect();
 }
 #endif // GLOWS_ENABLE
 

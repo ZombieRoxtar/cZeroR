@@ -1689,6 +1689,7 @@ public:
 protected:
 	virtual void		UpdateGlowEffect(void);
 	virtual void		DestroyGlowEffect(void);
+    virtual void       CheckGlowEffect(void);
 
 private:
 	bool				m_bGlowEnabled;
