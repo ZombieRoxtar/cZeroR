@@ -118,6 +118,17 @@ public:
 
 	void RenderGlowEffects( const CViewSetup *pSetup, int nSplitScreenSlot );
 
+    Vector GetRenderColor(int nGlowObjectHandle) const
+    {
+        Assert(!m_GlowObjectDefinitions[nGlowObjectHandle].IsUnused());
+        return m_GlowObjectDefinitions[nGlowObjectHandle].m_vGlowColor;
+    }
+    float GetRenderAlpha(int nGlowObjectHandle) const
+    {
+        Assert(!m_GlowObjectDefinitions[nGlowObjectHandle].IsUnused());
+        return m_GlowObjectDefinitions[nGlowObjectHandle].m_flGlowAlpha;
+    }
+
 private:
 
 	void RenderGlowModels( const CViewSetup *pSetup, int nSplitScreenSlot, CMatRenderContextPtr &pRenderContext );
@@ -206,6 +217,15 @@ public:
 	{
 		return IsRenderingWhenOccluded() || IsRenderingWhenUnoccluded();
 	}
+
+    Vector GetColor() const
+    {
+        return g_GlowObjectManager.GetRenderColor(m_nGlowObjectHandle);
+    }
+    float GetAlpha() const
+    {
+        return g_GlowObjectManager.GetRenderAlpha(m_nGlowObjectHandle);
+    }
 
 	// Add more accessors/mutators here as needed
 
