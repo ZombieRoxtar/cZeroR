@@ -6529,12 +6529,12 @@ void C_BaseEntity::DestroyGlowEffect(void)
 //-----------------------------------------------------------------------------
 void C_BaseEntity::CheckGlowEffect(void)
 {
-	if (m_bGlowEnabled && m_pGlowEffect &&
-		(m_pGlowEffect->GetColor().x != m_fGlowRed.Get()) ||
-		(m_pGlowEffect->GetColor().y != m_fGlowGreen.Get()) ||
-		(m_pGlowEffect->GetColor().z != m_fGlowBlue.Get()) ||
-		(m_pGlowEffect->GetAlpha() != m_fGlowAlpha.Get()))
-		UpdateGlowEffect();
+	if (m_bGlowEnabled && m_pGlowEffect)
+			if(	(m_pGlowEffect->GetColor().x != m_fGlowRed.Get()) ||
+				(m_pGlowEffect->GetColor().y != m_fGlowGreen.Get()) ||
+				(m_pGlowEffect->GetColor().z != m_fGlowBlue.Get()) ||
+				(m_pGlowEffect->GetAlpha() != m_fGlowAlpha.Get()))
+				UpdateGlowEffect();
 }
 #endif // GLOWS_ENABLE
 
