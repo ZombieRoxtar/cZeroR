@@ -22,6 +22,7 @@
 
 #define BOMB_ZONE_TYPE ZONE_DEFUSE
 
+// When it explodes TODO: KeyValue? Check < defuse time?
 #define BOMB_FUSE_TIME 30.0f
 #define SPRITE_TOGGLE_TIME 0.5f
 #define BOMB_BEEP_TIME 2.0f
@@ -38,10 +39,10 @@ DEFINE_FIELD(m_hC4Screen, FIELD_EHANDLE),
 
 DEFINE_KEYFIELD(m_iszZoneName, FIELD_STRING, "ZoneName"),
 
-DEFINE_FUNCTION(Off),
-DEFINE_FUNCTION(Tick),
+DEFINE_THINKFUNC(Off),
+DEFINE_THINKFUNC(Tick),
 
-DEFINE_INPUTFUNC(FIELD_VOID, "Start", Start),
+DEFINE_INPUTFUNC(FIELD_VOID, "Start", InputStart),
 DEFINE_INPUTFUNC(FIELD_VOID, "Explode", Explode),
 
 DEFINE_OUTPUT(m_OnPlayerUse, "OnPlayerUse"),
@@ -66,10 +67,16 @@ void CPropBomb::Spawn()
 		m_flNextThinkTime = gpGlobals->curtime;
 
 	if (HasSpawnFlags(SF_BOMB_START_ON))
-	{
-		variant_t emptyVariant;
-		this->AcceptInput("Start", NULL, NULL, emptyVariant, 0);
-	}
+		Start();
+}
+
+// This and BaseClass::Precache() called by BaseClass::Spawn()
+void CPropBomb::Precache()
+{
+	PrecacheScriptSound("c4.disarmstart");
+	PrecacheScriptSound("c4.disarmfinish");
+	PrecacheScriptSound("c4.click");
+	PrecacheMaterial(C4_LED_GLOW);
 }
 
 void CPropBomb::Activate()
@@ -80,21 +87,24 @@ void CPropBomb::Activate()
 		(NULL, m_iszZoneName.ToCStr(), GetLocalOrigin(), 256);
 	m_pDefusezone = dynamic_cast < CSpecialZone* > (pResult);
 
-	if (m_pDefusezone)
-		if (m_pDefusezone->GetType() == BOMB_ZONE_TYPE)
-			return;
+	if ((m_pDefusezone) && (m_pDefusezone->GetType() == BOMB_ZONE_TYPE))
+		return;
 
 	Warning(
 		"The prop_bomb with an incompatible or missing zone at (%f, %f, %f) cannot be defused!\n",
 		GetLocalOrigin().x, GetLocalOrigin().y, GetLocalOrigin().z);
 }
 
-void CPropBomb::Start(inputdata_t &inputData)
+void CPropBomb::InputStart(inputdata_t &inputData)
+{
+	Start();
+}
+void CPropBomb::Start(void)
 {
 	if (!m_bActive)
 	{
 		m_bActive = true;
-		m_iCaps = FCAP_CONTINUOUS_USE;
+		m_iCaps = FCAP_CONTINUOUS_USE | FCAP_USE_IN_RADIUS;
 		m_flStartedTime = gpGlobals->curtime;
 		SpawnPanel();
 		SpriteStart();
@@ -109,6 +119,8 @@ void CPropBomb::Start(inputdata_t &inputData)
 				m_OldColor.g = m_fGlowGreen;
 				m_OldColor.b = m_fGlowBlue;
 				m_OldColor.a = m_fGlowAlpha;
+				// BUGBUG: Glows must be restarted to reflect color changes
+				//RemoveGlowEffect();
 			}
 			else
 			{
@@ -176,9 +188,10 @@ void CPropBomb::Tick()
 
 	if (m_flNextBlinkTime <= gpGlobals->curtime)
 	{
-		m_pSprite->InputToggleSprite(inputdata_t());
+		if (m_bSpriteReady)
+			m_pSprite->InputToggleSprite(inputdata_t());
 		m_flNextBlinkTime = gpGlobals->curtime + SPRITE_TOGGLE_TIME;
-		// Scare NPCs?
+		// Scare NPCs
 		CSoundEnt::InsertSound(SOUND_DANGER, GetAbsOrigin(), 512, SPRITE_TOGGLE_TIME);
 	}
 
@@ -193,7 +206,8 @@ void CPropBomb::Tick()
 		m_OnTimerExpired.FireOutput(this, this);
 		m_bActive = false;
 		m_iCaps = NULL;
-		m_pSprite->TurnOff();
+		if (m_bSpriteReady)
+			m_pSprite->TurnOff();
 		StopGlowing();
 
 		if (HasSpawnFlags(SF_BOMB_SHOULD_EXPLODE))
@@ -278,7 +292,8 @@ void CPropBomb::Explode(inputdata_t &inputData)
 {
 	Assert(m_hC4Screen != NULL);
 	m_hC4Screen->SUB_Remove();
-	m_pSprite->Remove();
+	if (m_bSpriteReady)
+		m_pSprite->Remove();
 	StopGlowing(true);
 
 	ExplosionCreate(GetLocalOrigin(), GetAbsAngles(), this, 1024, 128, true);
@@ -369,8 +384,10 @@ void CPropBomb::Off(void)
 void CPropBomb::Deactivate(void)
 {
 	m_bActive = false;
+	Assert(m_hC4Screen != NULL);
 	m_hC4Screen->SUB_Remove();
 	m_iCaps = NULL;
-	m_pSprite->TurnOff();
+	if (m_bSpriteReady)
+		m_pSprite->TurnOff();
 	StopGlowing();
 }

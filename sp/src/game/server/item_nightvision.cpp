@@ -33,8 +33,6 @@ public:
 	virtual void Precache(void);
 	virtual void Activate(void);
 
-	void StartUp(void);
-	void Shutdown(void);
 	void Toggle(void);
 
 private:
@@ -68,13 +66,15 @@ void CNightVision::Spawn(void)
 	m_nTint_a = cl_nightvisioncolor_a.GetInt();
 	Precache();
 	BaseClass::Spawn();
+
+	// This is not automatic for items dropped into a running map
 	Activate();
 }
 
 CNightVision::~CNightVision()
 {
 	if (m_bActive)
-		Shutdown();
+		Toggle();
 	if(pEquippedNVGs == this)
 		pEquippedNVGs = nullptr;
 }
@@ -116,30 +116,6 @@ void CNightVision::Activate()
 }
 
 //-----------------------------------------------------------------------------
-// Purpose: Console command to force the goggles to turn on.
-//-----------------------------------------------------------------------------
-static void CC_FadeOut(const CCommand &args)
-{
-	if (!pEquippedNVGs)
-	{
-		return;
-	}
-	pEquippedNVGs->StartUp();
-}
-static ConCommand nvg_on("nvg_on", CC_FadeOut, "Turns on the NVG test effect.", FCVAR_CHEAT);
-//-----------------------------------------------------------------------------
-// Purpose: Console command to force the goggles to turn off.
-//-----------------------------------------------------------------------------
-static void CC_FadeIn(const CCommand &args)
-{
-	if (!pEquippedNVGs)
-	{
-		return;
-	}
-	pEquippedNVGs->Shutdown();
-}
-static ConCommand nvg_off("nvg_off", CC_FadeIn, "Turns off the NVG test effect.", FCVAR_CHEAT);
-//-----------------------------------------------------------------------------
 // Purpose: Toggle the goggles!
 //-----------------------------------------------------------------------------
 static void ToggleNVGs(const CCommand &args)
@@ -160,44 +136,33 @@ void CNightVision::Toggle(void)
 {
 	if (pEquippedNVGs != this) // These goggles are not equipped
 	{
+		// Remove?
 		return;
 	}
-	if (!m_bActive)
+
+	// The active state is "wrong" when this is called
+	m_bActive.Set(!m_bActive);
+
+	color32 clrFade;
+	CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
+	clrFade.r = cl_nightvisioncolor_r.GetInt();
+	clrFade.g = cl_nightvisioncolor_g.GetInt();
+	clrFade.b = cl_nightvisioncolor_b.GetInt();
+	clrFade.a = cl_nightvisioncolor_a.GetInt();
+
+	const char* soundname = m_bActive ? "Player.NightVisionOn" : "Player.NightVisionOff";
+	int flags = FFADE_PURGE;
+
+	if (m_bActive)
 	{
-		StartUp();
+		flags |= FFADE_OUT | FFADE_STAYOUT;
 	}
 	else
 	{
-		Shutdown();
+		flags |= FFADE_IN;
 	}
-}
 
-void CNightVision::StartUp(void)
-{
-	color32 clrFade;
-	CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
-
-	clrFade.r = cl_nightvisioncolor_r.GetInt();
-	clrFade.g = cl_nightvisioncolor_g.GetInt();
-	clrFade.b = cl_nightvisioncolor_b.GetInt();
-	clrFade.a = cl_nightvisioncolor_a.GetInt();
-
-	UTIL_ScreenFade(pPlayer, clrFade, 0, -1, FFADE_OUT | FFADE_PURGE | FFADE_STAYOUT);
-	CPASAttenuationFilter filter(pPlayer, "Player.NightVisionOn");
-	EmitSound(filter, pPlayer->entindex(), "Player.NightVisionOn");
-	m_bActive.Set(true);
-}
-void CNightVision::Shutdown(void)
-{
-	color32 clrFade;
-	CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
-
-	clrFade.r = cl_nightvisioncolor_r.GetInt();
-	clrFade.g = cl_nightvisioncolor_g.GetInt();
-	clrFade.b = cl_nightvisioncolor_b.GetInt();
-	clrFade.a = cl_nightvisioncolor_a.GetInt();
-	CPASAttenuationFilter filter(pPlayer, "Player.NightVisionOff");
-	EmitSound(filter, pPlayer->entindex(), "Player.NightVisionOff");
-	UTIL_ScreenFade(pPlayer, clrFade, 0, 0, FFADE_IN | FFADE_PURGE);
-	m_bActive.Set(false);
+	UTIL_ScreenFade(pPlayer, clrFade, 0.0f, -1.0f, flags);
+	CPASAttenuationFilter filter(pPlayer, soundname);
+	EmitSound(filter, pPlayer->entindex(), soundname);
 }

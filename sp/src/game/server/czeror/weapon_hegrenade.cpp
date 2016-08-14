@@ -9,9 +9,9 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-ConVar sk_plr_dmg_hegrenade	( "sk_plr_dmg_fraggrenade","0");
-ConVar sk_npc_dmg_hegrenade	( "sk_npc_dmg_fraggrenade","0");
-ConVar sk_hegrenade_radius	( "sk_hegrenade_radius"   ,"0");
+ConVar sk_plr_dmg_hegrenade	( "sk_plr_dmg_hegrenade","0");
+ConVar sk_npc_dmg_hegrenade	( "sk_npc_dmg_hegrenade","0");
+ConVar sk_hegrenade_radius	( "sk_hegrenade_radius" ,"0");
 
 class CWeaponHeGrenade: public CWeaponMultiGrenade
 {

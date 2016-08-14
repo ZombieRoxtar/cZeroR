@@ -10,17 +10,21 @@
 #pragma once
 #endif
 
+#include "props.h"
+
 class CSpecialZone;
 class CSprite;
 
-class CPropBomb : public CBaseAnimating
+class CPropBomb : public CBaseProp
 {
 public:
-	DECLARE_CLASS(CPropBomb, CBaseAnimating);
+	DECLARE_CLASS(CPropBomb, CBaseProp);
 
 	void Spawn(void);
+	void Precache(void);
 	void Activate(void);
-	void Start(inputdata_t &inputData);
+	void InputStart(inputdata_t &inputData);
+	void Start(void);
 	void Countdown(void);
 	void SpriteStart(void);
 	void Tick(void);

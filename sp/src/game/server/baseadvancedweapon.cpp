@@ -478,14 +478,20 @@ bool CBaseAdvancedWeapon::SetZoomLevel(int level)
 		CPASAttenuationFilter zoomIn_filter(pPlayer, GetZoomInSound());
 		EmitSound(zoomIn_filter, pPlayer->entindex(), GetZoomInSound());
 		if (!pPlayer->SetFOV(this, GetZoomFov(level), GetZoomTime(level)))
+		{
 			DevWarning("Failed to zoom!\n", level, GetZoomFov(level));
+			return false;
+		}
 	}
 	else
 	{
 		CPASAttenuationFilter zoomOut_filter(pPlayer, GetZoomOutSound());
 		EmitSound(zoomOut_filter, pPlayer->entindex(), GetZoomOutSound());
 		if (!pPlayer->SetFOV(this, 0, GetZoomTime(0)))
+		{
 			DevWarning("Failed to unzoom!\n", level, GetZoomFov(level));
+			return false;
+		}
 		if (HideViewModelWhenZoomed())
 			WRITE_BYTE(0);
 	}
