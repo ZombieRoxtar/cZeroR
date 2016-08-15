@@ -424,6 +424,7 @@ void CAdvancedGrenade::SetType(int type)
 			break;
 
 		case SMOKE_GRENADE:
+			PrecacheModel(SMOKE_CLOUD_MATERIAL);
 			szModelName = "models/weapons/w_eq_smokegrenade_thrown.mdl";
 			/* There is no case for default or HE because the vars are initialized to the HE Grenade's to avoid gremlins */
 		}
@@ -706,17 +707,14 @@ void CAdvancedGrenade::GoBoom(trace_t *pTrace, int bitsDamageType, int nType)
 
 	SetModelName(NULL_STRING);
 
-	// Pull out of the wall a bit
-	if (pTrace->fraction != 1.0)
-	{
-		SetAbsOrigin(pTrace->endpos + (pTrace->plane.normal * 0.6));
-	}
-
 	Vector vecAbsOrigin = GetAbsOrigin();
 	int contents = UTIL_PointContents(vecAbsOrigin);
-
+	
 	if (pTrace->fraction != 1.0)
 	{
+		// Pull out of the wall a bit
+		SetAbsOrigin(pTrace->endpos + (pTrace->plane.normal * 0.6));
+
 		Vector vecNormal = pTrace->plane.normal;
 		surfacedata_t *pdata = physprops->GetSurfaceData(pTrace->surface.surfaceProps);
 		CPASFilter filter(vecAbsOrigin);
@@ -746,12 +744,11 @@ void CAdvancedGrenade::GoBoom(trace_t *pTrace, int bitsDamageType, int nType)
 	}
 
 	CSoundEnt::InsertSound(SOUND_COMBAT, GetAbsOrigin(), BASEGRENADE_EXPLOSION_VOLUME, 3.0);
-	CTakeDamageInfo tmpInfo(this, pThrower, GetBlastForce(), GetAbsOrigin(), m_flDamage, bitsDamageType, 0, &vecReported);
-	RadiusDamage(tmpInfo, GetAbsOrigin(), m_DmgRadius, CLASS_NONE, NULL);
-	UTIL_DecalTrace(pTrace, "Scorch");
 
 	if (nType == HI_EX_GRENADE)
 	{
+		CTakeDamageInfo tmpInfo(this, pThrower, GetBlastForce(), GetAbsOrigin(), m_flDamage, bitsDamageType, 0, &vecReported);
+		RadiusDamage(tmpInfo, GetAbsOrigin(), m_DmgRadius, CLASS_NONE, NULL);
 		UTIL_ScreenShake(GetAbsOrigin(), GetShakeAmplitude(), m_flDamage, 1.0, GetShakeRadius(), SHAKE_START);
 		EmitSound("BaseGrenade.Explode");
 	}
@@ -759,6 +756,7 @@ void CAdvancedGrenade::GoBoom(trace_t *pTrace, int bitsDamageType, int nType)
 	{
 		EmitSound("AdvancedGrenade.SelfDestruct");
 	}
+	UTIL_DecalTrace(pTrace, "Scorch");
 }
 
 void CAdvancedGrenade::GlassGibs(int count)

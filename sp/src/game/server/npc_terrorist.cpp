@@ -47,9 +47,9 @@ extern ConVar sk_plr_num_shotgun_pellets;
 //-----------------------------------------------------------------------------
 int	g_interactionTerroristBash = 0; // melee bash attack
 
-									//=========================================================
-									// Combines's Anim Events Go Here
-									//=========================================================
+//=========================================================
+// Anim Events Go Here
+//=========================================================
 #define COMBINE_AE_RELOAD			( 2 )
 #define COMBINE_AE_KICK				( 3 )
 #define COMBINE_AE_AIM				( 4 )
@@ -58,9 +58,9 @@ int	g_interactionTerroristBash = 0; // melee bash attack
 #define COMBINE_AE_GREN_DROP		( 9 )
 #define COMBINE_AE_CAUGHT_ENEMY		( 10) // established sight with an enemy (player only) that had previously eluded the squad.
 
-									//=========================================================
-									// Combine activities
-									//=========================================================
+//=========================================================
+// Activities
+//=========================================================
 Activity ACT_TERRORIST_THROW_GRENADE;
 Activity ACT_TERRORIST_BLINDED;
 Activity ACT_TERRORIST_WALK;

@@ -76,7 +76,7 @@ void CPropBomb::Precache()
 	PrecacheScriptSound("c4.disarmstart");
 	PrecacheScriptSound("c4.disarmfinish");
 	PrecacheScriptSound("c4.click");
-	PrecacheMaterial(C4_LED_GLOW);
+	PrecacheModel(C4_LED_GLOW);
 }
 
 void CPropBomb::Activate()
@@ -119,8 +119,6 @@ void CPropBomb::Start(void)
 				m_OldColor.g = m_fGlowGreen;
 				m_OldColor.b = m_fGlowBlue;
 				m_OldColor.a = m_fGlowAlpha;
-				// BUGBUG: Glows must be restarted to reflect color changes
-				//RemoveGlowEffect();
 			}
 			else
 			{
@@ -149,18 +147,17 @@ void CPropBomb::SpriteStart()
 {
 	if (!m_bSpriteReady)
 	{
-		CBaseAnimating *pEntityToSpawnOn = this;
-
-		int nLedAttachmentIndex = pEntityToSpawnOn->LookupAttachment("led");
-
+		int nLedAttachmentIndex = this->LookupAttachment("led");
 		if (nLedAttachmentIndex <= 0)
 		{
+			/*
+				This model doesn't have the attachment point,
+				skip the sprite so it doesn't spawn under the model
+			//*/
 			return;
 		}
-
 		Vector vecAttachment;
-		pEntityToSpawnOn->GetAttachment(nLedAttachmentIndex, vecAttachment);
-
+		this->GetAttachment(nLedAttachmentIndex, vecAttachment);
 		m_hSprite = CSprite::SpriteCreate(C4_LED_GLOW, vecAttachment, false);
 		m_pSprite = (CSprite *)m_hSprite.Get();
 		if (m_pSprite)

@@ -278,7 +278,6 @@ const Vector CBaseAdvancedWeapon::GetBaseAccuracy(void)
 {
 	float fBigAcc = GetInaccuracyStand(); // From the script, these are stored as RADIANS (i.e. "9.16")
 
-										  // Check the character's current stance
 	if (pPlayer == NULL)
 	{
 		return Vector(sin(DEG2RAD(fBigAcc / 2.0f)));
@@ -459,48 +458,50 @@ bool CBaseAdvancedWeapon::ShouldDisplayAltFireHUDHint()
 //-----------------------------------------------------------------------------
 bool CBaseAdvancedWeapon::SetZoomLevel(int level)
 {
-	if (!pPlayer)
+	if (m_bHasScope)
 	{
-		return false;
-	}
-
-	if (level > GetZoomLevels())
-		level = 0;
-
-	CSingleUserRecipientFilter scope_filter(pPlayer);
-	if (HideViewModelWhenZoomed())
-		UserMessageBegin(scope_filter, "ShowScope");
-
-	if (level > 0)
-	{
-		if (HideViewModelWhenZoomed())
-			WRITE_BYTE(1);
-		CPASAttenuationFilter zoomIn_filter(pPlayer, GetZoomInSound());
-		EmitSound(zoomIn_filter, pPlayer->entindex(), GetZoomInSound());
-		if (!pPlayer->SetFOV(this, GetZoomFov(level), GetZoomTime(level)))
+		if (!pPlayer)
 		{
-			DevWarning("Failed to zoom!\n", level, GetZoomFov(level));
 			return false;
 		}
-	}
-	else
-	{
-		CPASAttenuationFilter zoomOut_filter(pPlayer, GetZoomOutSound());
-		EmitSound(zoomOut_filter, pPlayer->entindex(), GetZoomOutSound());
-		if (!pPlayer->SetFOV(this, 0, GetZoomTime(0)))
-		{
-			DevWarning("Failed to unzoom!\n", level, GetZoomFov(level));
-			return false;
-		}
+
+		if (level > GetZoomLevels())
+			level = 0;
+
+		CSingleUserRecipientFilter scope_filter(pPlayer);
 		if (HideViewModelWhenZoomed())
-			WRITE_BYTE(0);
+			UserMessageBegin(scope_filter, "ShowScope");
+
+		if (level > 0)
+		{
+			if (HideViewModelWhenZoomed())
+				WRITE_BYTE(1);
+			CPASAttenuationFilter zoomIn_filter(pPlayer, GetZoomInSound());
+			EmitSound(zoomIn_filter, pPlayer->entindex(), GetZoomInSound());
+			if (!pPlayer->SetFOV(this, GetZoomFov(level), GetZoomTime(level)))
+			{
+				DevWarning("Failed to zoom!\n", level, GetZoomFov(level));
+				return false;
+			}
+		}
+		else
+		{
+			CPASAttenuationFilter zoomOut_filter(pPlayer, GetZoomOutSound());
+			EmitSound(zoomOut_filter, pPlayer->entindex(), GetZoomOutSound());
+			if (!pPlayer->SetFOV(this, 0, GetZoomTime(0)))
+			{
+				DevWarning("Failed to unzoom!\n", level, GetZoomFov(level));
+				return false;
+			}
+			if (HideViewModelWhenZoomed())
+				WRITE_BYTE(0);
+		}
+		m_nZoomLevel.Set(level);
+
+		if (HideViewModelWhenZoomed())
+			MessageEnd(); // "ShowScope"
+
+		pPlayer->ShowViewModel(!(m_nZoomLevel.Get() && HideViewModelWhenZoomed()));
 	}
-	m_nZoomLevel.Set(level);
-
-	if (HideViewModelWhenZoomed())
-		MessageEnd(); // "ShowScope"
-
-	pPlayer->ShowViewModel(!(m_nZoomLevel.Get() && HideViewModelWhenZoomed()));
-
 	return true;
 }

@@ -50,9 +50,7 @@ CWeaponMultiGrenade::CWeaponMultiGrenade() :
 void CWeaponMultiGrenade::Precache(void)
 {
 	BaseClass::Precache();
-
 	UTIL_PrecacheOther("npc_advanced_grenade");
-	PrecacheScriptSound("WeaponFrag.Throw");
 }
 
 void CWeaponMultiGrenade::SetType(int type)
